@@ -41,13 +41,19 @@ export function useModels() {
     userId: string
   ) => {
     try {
+      console.log('Starting upload with metadata:', metadata);
+      console.log('File details:', { name: file.name, size: file.size, type: file.type });
+      
       // Upload file to Supabase Storage
       const fileName = `${Date.now()}-${file.name}`;
+      console.log('Uploading file as:', fileName);
+      
       const { data: uploadData, error: uploadError } = await supabase.storage
         .from('models')
         .upload(fileName, file);
 
       if (uploadError) throw uploadError;
+      console.log('File uploaded successfully:', uploadData);
 
       // Insert model metadata into database
       const { data, error } = await supabase
@@ -55,17 +61,22 @@ export function useModels() {
         .insert({
           user_id: userId,
           name: metadata.name,
-          description: metadata.description || '',
+          description: metadata.description || null,
           file_path: uploadData.path,
           size_bytes: file.size,
-          framework: metadata.framework || '',
-          format: metadata.format || '',
-          tags: metadata.tags && metadata.tags.length > 0 ? metadata.tags : [],
+          framework: metadata.framework || null,
+          format: metadata.format || null,
+          tags: metadata.tags && metadata.tags.length > 0 ? metadata.tags : null,
         })
         .select()
         .single();
 
-      if (error) throw error;
+      if (error) {
+        console.error('Database insert error:', error);
+        throw error;
+      }
+      
+      console.log('Model metadata saved successfully:', data);
 
       // Refresh models list
       fetchModels();
@@ -74,7 +85,7 @@ export function useModels() {
       console.error('Upload error:', err);
       return { 
         data: null, 
-        error: err instanceof Error ? err.message : 'Failed to upload model' 
+        error: err instanceof Error ? err.message : 'Failed to upload model'
       };
     }
   };

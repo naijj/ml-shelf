@@ -55,11 +55,17 @@ export function UploadForm({ onSuccess }: UploadFormProps) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
     if (!file || !user || !name.trim()) {
-      setError('Please provide a model name');
+      setError('Please select a file and provide a model name');
       return;
     }
 
+    console.log('Form submission started');
+    console.log('User:', user.id);
+    console.log('File:', file.name, file.size);
+    console.log('Name:', name.trim());
+    
     setUploading(true);
     setError('');
 
@@ -67,21 +73,26 @@ export function UploadForm({ onSuccess }: UploadFormProps) {
       ? tags.split(',').map(tag => tag.trim()).filter(tag => tag.length > 0)
       : [];
 
-    const { error: uploadError } = await uploadModel(
+    const metadata = {
+      name: name.trim(),
+      description: description.trim() || undefined,
+      framework: framework || undefined,
+      format: format.trim() || undefined,
+      tags: tagsArray.length > 0 ? tagsArray : undefined,
+    };
+    
+    console.log('Upload metadata:', metadata);
+    const { data, error: uploadError } = await uploadModel(
       file,
-      {
-        name: name.trim(),
-        description: description.trim(),
-        framework: framework,
-        format: format.trim(),
-        tags: tagsArray,
-      },
+      metadata,
       user.id
     );
 
     if (uploadError) {
+      console.error('Upload failed:', uploadError);
       setError(uploadError);
     } else {
+      console.log('Upload successful:', data);
       // Reset form
       setFile(null);
       setName('');
