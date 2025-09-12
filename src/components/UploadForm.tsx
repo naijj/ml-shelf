@@ -56,8 +56,23 @@ export function UploadForm({ onSuccess }: UploadFormProps) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!file || !user || !name.trim()) {
-      setError('Please select a file and provide a model name');
+    console.log('Form validation check:');
+    console.log('File:', file ? file.name : 'No file');
+    console.log('User:', user ? user.id : 'No user');
+    console.log('Name:', `"${name}"`, 'Trimmed:', `"${name.trim()}"`, 'Length:', name.trim().length);
+    
+    if (!file) {
+      setError('Please select a file');
+      return;
+    }
+    
+    if (!user) {
+      setError('Please sign in to upload models');
+      return;
+    }
+    
+    if (!name || name.trim().length === 0) {
+      setError('Please provide a model name');
       return;
     }
 
@@ -184,6 +199,7 @@ export function UploadForm({ onSuccess }: UploadFormProps) {
               className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
               placeholder="Enter model name"
               maxLength={100}
+              onBlur={() => console.log('Name field blur:', `"${name}"`)}
               required
             />
             <p className="text-xs text-gray-500 mt-1">
