@@ -41,48 +41,64 @@ export function useModels() {
     userId: string
   ) => {
     try {
-      console.log('Starting upload with metadata:', metadata);
-      console.log('File details:', { name: file.name, size: file.size, type: file.type });
+      console.log('🚀 Starting model upload...');
+      console.log('📁 File:', { name: file.name, size: file.size, type: file.type });
+      console.log('👤 User ID:', userId);
+      console.log('📋 Metadata:', metadata);
       
       // Upload file to Supabase Storage
       const fileName = `${Date.now()}-${file.name}`;
-      console.log('Uploading file as:', fileName);
+      console.log('📤 Uploading file as:', fileName);
       
       const { data: uploadData, error: uploadError } = await supabase.storage
         .from('models')
         .upload(fileName, file);
 
-      if (uploadError) throw uploadError;
-      console.log('File uploaded successfully:', uploadData);
+      if (uploadError) {
+        console.error('❌ Storage upload failed:', uploadError);
+        throw new Error(`File upload failed: ${uploadError.message}`);
+      }
+      
+      console.log('✅ File uploaded to storage:', uploadData.path);
 
-      // Insert model metadata into database
+      // Prepare database record
+      const dbRecord = {
+        user_id: userId,
+        name: metadata.name,
+        description: metadata.description || null,
+        file_path: uploadData.path,
+        size_bytes: file.size,
+        framework: metadata.framework || null,
+        format: metadata.format || null,
+        tags: metadata.tags || null,
+      };
+      
+      console.log('💾 Inserting to database:', dbRecord);
+
       const { data, error } = await supabase
         .from('models')
-        .insert({
-          user_id: userId,
-          name: metadata.name,
-          description: metadata.description || null,
-          file_path: uploadData.path,
-          size_bytes: file.size,
-          framework: metadata.framework || null,
-          format: metadata.format || null,
-          tags: metadata.tags && metadata.tags.length > 0 ? metadata.tags : null,
-        })
+        .insert(dbRecord)
         .select()
         .single();
 
       if (error) {
-        console.error('Database insert error:', error);
-        throw error;
+        console.error('❌ Database insert failed:', error);
+        
+        // Clean up uploaded file if database insert fails
+        await supabase.storage.from('models').remove([uploadData.path]);
+        
+        throw new Error(`Database error: ${error.message}`);
       }
       
-      console.log('Model metadata saved successfully:', data);
+      console.log('✅ Model saved successfully:', data);
 
       // Refresh models list
-      fetchModels();
+      await fetchModels();
+      
       return { data, error: null };
+      
     } catch (err) {
-      console.error('Upload error:', err);
+      console.error('💥 Upload failed:', err);
       return { 
         data: null, 
         error: err instanceof Error ? err.message : 'Failed to upload model'
