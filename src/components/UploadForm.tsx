@@ -39,7 +39,7 @@ export function UploadForm({ onSuccess }: UploadFormProps) {
     }
     setFile(selectedFile);
     setError('');
-    if (!name) {
+    if (!name.trim()) {
       setName(selectedFile.name.replace(/\.[^/.]+$/, ''));
     }
   };
@@ -55,7 +55,10 @@ export function UploadForm({ onSuccess }: UploadFormProps) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!file || !user) return;
+    if (!file || !user || !name.trim()) {
+      setError('Please provide a model name');
+      return;
+    }
 
     setUploading(true);
     setError('');
@@ -67,7 +70,7 @@ export function UploadForm({ onSuccess }: UploadFormProps) {
     const { error: uploadError } = await uploadModel(
       file,
       {
-        name,
+        name: name.trim(),
         description: description.trim(),
         framework: framework,
         format: format.trim(),
@@ -169,22 +172,30 @@ export function UploadForm({ onSuccess }: UploadFormProps) {
               onChange={(e) => setName(e.target.value)}
               className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
               placeholder="Enter model name"
+              maxLength={100}
               required
             />
+            <p className="text-xs text-gray-500 mt-1">
+              {name.length}/100 characters
+            </p>
           </div>
 
           {/* Description */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              Description
+              Description (Optional)
             </label>
             <textarea
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               rows={3}
+              maxLength={500}
               className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all resize-none"
               placeholder="Describe your model and its capabilities"
             />
+            <p className="text-xs text-gray-500 mt-1">
+              {description.length}/500 characters
+            </p>
           </div>
 
           {/* Framework & Format */}
@@ -236,7 +247,7 @@ export function UploadForm({ onSuccess }: UploadFormProps) {
           {/* Submit Button */}
           <button
             type="submit"
-            disabled={!file || !name || uploading}
+            disabled={!file || !name.trim() || uploading}
             className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2 font-medium"
           >
             {uploading ? (
