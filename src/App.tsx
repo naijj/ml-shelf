@@ -2,14 +2,25 @@ import React, { useState } from 'react';
 import { Header } from './components/Header';
 import { Hero } from './components/Hero';
 import { ModelGrid } from './components/ModelGrid';
+import { ModelDetailModal } from './components/ModelDetailModal';
 import { AuthModal } from './components/AuthModal';
 import { Dashboard } from './components/Dashboard';
+import { UserProfile } from './components/UserProfile';
+import { WhyMLShelfSection } from './components/WhyMLShelfSection';
+import { TestimonialsSection } from './components/TestimonialsSection';
 import { useAuth } from './hooks/useAuth';
+import { useModels } from './hooks/useModels';
+import { Database as DB } from './lib/supabase';
+
+type Model = DB['public']['Tables']['models']['Row'];
 
 function App() {
   const [showAuth, setShowAuth] = useState(false);
-  const [currentView, setCurrentView] = useState<'home' | 'dashboard'>('home');
+  const [selectedModel, setSelectedModel] = useState<Model | null>(null);
+  const [showModelDetail, setShowModelDetail] = useState(false);
+  const [currentView, setCurrentView] = useState<'home' | 'dashboard' | 'profile'>('home');
   const { loading, user } = useAuth();
+  const { downloadModel } = useModels();
 
   const handleShowDashboard = () => {
     if (!user) {
@@ -19,8 +30,21 @@ function App() {
     setCurrentView('dashboard');
   };
 
+  const handleShowProfile = () => {
+    if (!user) {
+      setShowAuth(true);
+      return;
+    }
+    setCurrentView('profile');
+  };
+
   const handleBackToHome = () => {
     setCurrentView('home');
+  };
+
+  const handleViewModelDetails = (model: Model) => {
+    setSelectedModel(model);
+    setShowModelDetail(true);
   };
 
   const handleExploreModels = () => {
@@ -32,11 +56,8 @@ function App() {
 
   const handleAuthSuccess = () => {
     setShowAuth(false);
-    // Optionally redirect to dashboard after successful auth
-    if (currentView === 'home') {
-      setCurrentView('dashboard');
-    }
   };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
@@ -68,6 +89,7 @@ function App() {
       <Header 
         onShowAuth={() => setShowAuth(true)}
         onShowDashboard={handleShowDashboard}
+        onShowProfile={handleShowProfile}
         currentView={currentView}
       />
 
@@ -77,17 +99,32 @@ function App() {
             onShowAuth={() => setShowAuth(true)}
             onExploreModels={handleExploreModels}
           />
+          <WhyMLShelfSection />
           <div id="models-section">
-            <ModelGrid />
+            <ModelGrid onViewModelDetails={handleViewModelDetails} />
           </div>
+          <TestimonialsSection />
         </>
-      ) : (
+      ) : currentView === 'dashboard' ? (
         <Dashboard onBack={handleBackToHome} />
+      ) : (
+        <UserProfile onBack={handleBackToHome} />
       )}
 
       <AuthModal 
         isOpen={showAuth} 
         onClose={() => setShowAuth(false)}
+        onSuccess={handleAuthSuccess}
+      />
+
+      <ModelDetailModal
+        model={selectedModel}
+        isOpen={showModelDetail}
+        onClose={() => {
+          setShowModelDetail(false);
+          setSelectedModel(null);
+        }}
+        onDownload={downloadModel}
       />
 
       {/* Footer */}

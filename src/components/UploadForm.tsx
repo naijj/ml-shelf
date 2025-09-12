@@ -23,6 +23,7 @@ export function UploadForm({ onSuccess }: UploadFormProps) {
   const [formData, setFormData] = useState({
     name: '',
     description: '',
+    usage_instructions: '',
     framework: '',
     format: '',
     tags: ''
@@ -39,6 +40,7 @@ export function UploadForm({ onSuccess }: UploadFormProps) {
     setFormData({
       name: '',
       description: '',
+      usage_instructions: '',
       framework: '',
       format: '',
       tags: ''
@@ -130,6 +132,7 @@ export function UploadForm({ onSuccess }: UploadFormProps) {
       const metadata = {
         name: formData.name.trim(),
         description: formData.description.trim() || undefined,
+        usage_instructions: formData.usage_instructions.trim() || undefined,
         framework: formData.framework || undefined,
         format: formData.format.trim() || undefined,
         tags: tagsArray.length > 0 ? tagsArray : undefined,
@@ -264,10 +267,38 @@ export function UploadForm({ onSuccess }: UploadFormProps) {
             </p>
           </div>
 
+          {/* Usage Instructions */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Usage Instructions <span className="text-red-500">*</span>
+            </label>
+            <textarea
+              value={formData.usage_instructions}
+              onChange={(e) => handleInputChange('usage_instructions', e.target.value)}
+              rows={6}
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all resize-none font-mono text-sm"
+              placeholder="Provide usage instructions or sample code:
+
+```python
+import tensorflow as tf
+
+# Load the model
+model = tf.keras.models.load_model('your_model.h5')
+
+# Make predictions
+predictions = model.predict(your_data)
+```"
+              required
+            />
+            <p className="text-xs text-gray-500 mt-1">
+              Provide clear instructions on how to use your model. Include sample code if possible.
+            </p>
+          </div>
+
           {/* Description */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              Description
+              Additional Description
             </label>
             <textarea
               value={formData.description}
@@ -275,7 +306,7 @@ export function UploadForm({ onSuccess }: UploadFormProps) {
               rows={4}
               maxLength={500}
               className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all resize-none"
-              placeholder="Describe what your model does, its capabilities, and use cases..."
+              placeholder="Additional details about your model, capabilities, and use cases..."
             />
             <p className="text-xs text-gray-500 mt-1">
               {formData.description.length}/500 characters
@@ -335,7 +366,7 @@ export function UploadForm({ onSuccess }: UploadFormProps) {
           <div className="pt-4">
             <button
               type="submit"
-              disabled={uploading || !file || !formData.name.trim()}
+              disabled={uploading || !file || !formData.name.trim() || !formData.usage_instructions.trim()}
               className="w-full bg-blue-600 text-white py-4 rounded-lg hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors flex items-center justify-center space-x-3 font-medium text-lg"
             >
               {uploading ? (

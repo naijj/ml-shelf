@@ -1,14 +1,15 @@
 import React from 'react';
-import { Brain, User, LogOut } from 'lucide-react';
+import { Brain, User, LogOut, UserCircle } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 
 interface HeaderProps {
   onShowAuth?: () => void;
   onShowDashboard?: () => void;
+  onShowProfile?: () => void;
   currentView?: 'home' | 'dashboard';
 }
 
-export function Header({ onShowAuth, onShowDashboard, currentView }: HeaderProps) {
+export function Header({ onShowAuth, onShowDashboard, onShowProfile, currentView }: HeaderProps) {
   const { user, signOut } = useAuth();
 
   const handleSignOut = async () => {
@@ -37,6 +38,13 @@ export function Header({ onShowAuth, onShowDashboard, currentView }: HeaderProps
                     <span>Dashboard</span>
                   </button>
                 )}
+                <button
+                  onClick={onShowProfile}
+                  className="flex items-center space-x-2 px-4 py-2 text-gray-600 hover:bg-gray-50 rounded-lg transition-colors"
+                >
+                  <UserCircle className="w-4 h-4" />
+                  <span>Profile</span>
+                </button>
                 {currentView !== 'home' && (
                   <button
                     onClick={() => window.location.reload()}

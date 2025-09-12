@@ -24,6 +24,7 @@ export type Database = {
           user_id: string;
           name: string;
           description: string | null;
+          usage_instructions: string | null;
           file_path: string;
           size_bytes: number;
           framework: string | null;
@@ -37,6 +38,7 @@ export type Database = {
           user_id: string;
           name: string;
           description?: string | null;
+          usage_instructions?: string | null;
           file_path: string;
           size_bytes: number;
           framework?: string | null;
@@ -50,6 +52,7 @@ export type Database = {
           user_id?: string;
           name?: string;
           description?: string | null;
+          usage_instructions?: string | null;
           file_path?: string;
           size_bytes?: number;
           framework?: string | null;

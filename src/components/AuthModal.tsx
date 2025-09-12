@@ -5,9 +5,10 @@ import { useAuth } from '../hooks/useAuth';
 interface AuthModalProps {
   isOpen: boolean;
   onClose: () => void;
+  onSuccess?: () => void;
 }
 
-export function AuthModal({ isOpen, onClose }: AuthModalProps) {
+export function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps) {
   const [isSignUp, setIsSignUp] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -39,6 +40,7 @@ export function AuthModal({ isOpen, onClose }: AuthModalProps) {
       if (authError) {
         setError(authError.message);
       } else {
+        onSuccess?.();
         onClose();
         setEmail('');
         setPassword('');

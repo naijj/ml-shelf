@@ -34,6 +34,7 @@ export function useModels() {
     metadata: {
       name: string;
       description?: string;
+      usage_instructions?: string;
       framework?: string;
       format?: string;
       tags?: string[];
@@ -66,6 +67,7 @@ export function useModels() {
         user_id: userId,
         name: metadata.name,
         description: metadata.description || null,
+        usage_instructions: metadata.usage_instructions || null,
         file_path: uploadData.path,
         size_bytes: file.size,
         framework: metadata.framework || null,
