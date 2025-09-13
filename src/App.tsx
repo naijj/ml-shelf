@@ -1,62 +1,15 @@
-import React, { useState } from 'react';
-import { Header } from './components/Header';
-import { Hero } from './components/Hero';
-import { ModelGrid } from './components/ModelGrid';
-import { ModelDetailModal } from './components/ModelDetailModal';
-import { AuthModal } from './components/AuthModal';
+import React from 'react';
+import { Routes, Route, Navigate } from 'react-router-dom';
+import { Navbar } from './components/Navbar';
+import { LandingPage } from './components/LandingPage';
+import { Login } from './components/Login';
+import { Register } from './components/Register';
 import { Dashboard } from './components/Dashboard';
-import { UserProfile } from './components/UserProfile';
-import { WhyMLShelfSection } from './components/WhyMLShelfSection';
-import { TestimonialsSection } from './components/TestimonialsSection';
+import { ExplorePage } from './components/ExplorePage';
 import { useAuth } from './hooks/useAuth';
-import { useModels } from './hooks/useModels';
-import { Database as DB } from './lib/supabase';
-
-type Model = DB['public']['Tables']['models']['Row'];
 
 function App() {
-  const [showAuth, setShowAuth] = useState(false);
-  const [selectedModel, setSelectedModel] = useState<Model | null>(null);
-  const [showModelDetail, setShowModelDetail] = useState(false);
-  const [currentView, setCurrentView] = useState<'home' | 'dashboard' | 'profile'>('home');
   const { loading, user } = useAuth();
-  const { downloadModel } = useModels();
-
-  const handleShowDashboard = () => {
-    if (!user) {
-      setShowAuth(true);
-      return;
-    }
-    setCurrentView('dashboard');
-  };
-
-  const handleShowProfile = () => {
-    if (!user) {
-      setShowAuth(true);
-      return;
-    }
-    setCurrentView('profile');
-  };
-
-  const handleBackToHome = () => {
-    setCurrentView('home');
-  };
-
-  const handleViewModelDetails = (model: Model) => {
-    setSelectedModel(model);
-    setShowModelDetail(true);
-  };
-
-  const handleExploreModels = () => {
-    const modelsSection = document.querySelector('#models-section');
-    if (modelsSection) {
-      modelsSection.scrollIntoView({ behavior: 'smooth' });
-    }
-  };
-
-  const handleAuthSuccess = () => {
-    setShowAuth(false);
-  };
 
   if (loading) {
     return (
@@ -84,60 +37,26 @@ function App() {
       </div>
     );
   }
+
   return (
     <div className="min-h-screen bg-gray-50">
-      <Header 
-        onShowAuth={() => setShowAuth(true)}
-        onShowDashboard={handleShowDashboard}
-        onShowProfile={handleShowProfile}
-        currentView={currentView}
-      />
-
-      {currentView === 'home' ? (
-        <>
-          <Hero 
-            onShowAuth={() => setShowAuth(true)}
-            onExploreModels={handleExploreModels}
-          />
-          <WhyMLShelfSection />
-          <div id="models-section">
-            <ModelGrid onViewModelDetails={handleViewModelDetails} />
-          </div>
-          <TestimonialsSection />
-        </>
-      ) : currentView === 'dashboard' ? (
-        <Dashboard onBack={handleBackToHome} />
-      ) : (
-        <UserProfile onBack={handleBackToHome} />
-      )}
-
-      <AuthModal 
-        isOpen={showAuth} 
-        onClose={() => setShowAuth(false)}
-        onSuccess={handleAuthSuccess}
-      />
-
-      <ModelDetailModal
-        model={selectedModel}
-        isOpen={showModelDetail}
-        onClose={() => {
-          setShowModelDetail(false);
-          setSelectedModel(null);
-        }}
-        onDownload={downloadModel}
-      />
-
-      {/* Footer */}
-      <footer className="bg-white border-t border-gray-200 mt-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <div className="text-center text-gray-600">
-            <p className="text-sm">
-              MLShelf - Tiny ML Models for Everyone. 
-              <span className="ml-2">Built with React, Tailwind CSS, and Supabase.</span>
-            </p>
-          </div>
-        </div>
-      </footer>
+      <Navbar />
+      <Routes>
+        <Route path="/" element={<LandingPage />} />
+        <Route path="/explore" element={<ExplorePage />} />
+        <Route 
+          path="/login" 
+          element={user ? <Navigate to="/dashboard" replace /> : <Login />} 
+        />
+        <Route 
+          path="/register" 
+          element={user ? <Navigate to="/dashboard" replace /> : <Register />} 
+        />
+        <Route 
+          path="/dashboard" 
+          element={user ? <Dashboard /> : <Navigate to="/login" replace />} 
+        />
+      </Routes>
     </div>
   );
 }

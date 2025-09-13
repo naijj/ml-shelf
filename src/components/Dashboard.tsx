@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { User, Upload, Database, ArrowLeft } from 'lucide-react';
+import { User, Upload, Database } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 import { useModels } from '../hooks/useModels';
 import { UploadForm } from './UploadForm';
@@ -8,11 +8,7 @@ import { Database as DB } from '../lib/supabase';
 
 type Model = DB['public']['Tables']['models']['Row'];
 
-interface DashboardProps {
-  onBack: () => void;
-}
-
-export function Dashboard({ onBack }: DashboardProps) {
+export function Dashboard() {
   const [userModels, setUserModels] = useState<Model[]>([]);
   const [loading, setLoading] = useState(true);
   const [showUpload, setShowUpload] = useState(false);
@@ -55,14 +51,9 @@ export function Dashboard({ onBack }: DashboardProps) {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
-          <div className="flex items-center space-x-4">
-            <button
-              onClick={onBack}
-              className="flex items-center space-x-2 text-gray-600 hover:text-gray-800 transition-colors"
-            >
-              <ArrowLeft className="w-5 h-5" />
-              <span>Back to Models</span>
-            </button>
+          <div>
+            <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
+            <p className="text-gray-600 mt-1">Manage your ML models</p>
           </div>
           
           <div className="flex items-center space-x-4">
