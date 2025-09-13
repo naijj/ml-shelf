@@ -14,16 +14,25 @@ export function LandingPage() {
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
-      <section className="bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 py-20 overflow-hidden">
+      <section className="min-h-screen bg-gradient-to-br from-purple-400 via-blue-500 to-indigo-600 flex items-center overflow-hidden relative">
+        {/* Background Pattern */}
+        <div className="absolute inset-0 opacity-10">
+          <div className="absolute top-20 left-20 w-32 h-32 bg-white rounded-full blur-xl"></div>
+          <div className="absolute top-40 right-32 w-24 h-24 bg-white rounded-full blur-lg"></div>
+          <div className="absolute bottom-32 left-1/3 w-40 h-40 bg-white rounded-full blur-2xl"></div>
+        </div>
+        
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            {/* Left Content */}
+            <div className="text-left lg:text-left">
             <motion.div
               initial={{ opacity: 0, scale: 0.5 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.6 }}
-              className="flex items-center justify-center mb-8"
+              className="flex items-center justify-center lg:justify-start mb-8"
             >
-              <div className="bg-blue-600 p-4 rounded-2xl shadow-lg">
+              <div className="bg-white/20 backdrop-blur-sm p-4 rounded-2xl shadow-lg border border-white/30">
                 <Brain className="w-12 h-12 text-white" />
               </div>
             </motion.div>
@@ -32,35 +41,34 @@ export function LandingPage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.2 }}
-              className="text-5xl sm:text-6xl font-bold text-gray-900 mb-6"
+              className="text-5xl sm:text-6xl lg:text-7xl font-bold text-white mb-6 leading-tight"
             >
-              <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                MLShelf
-              </span>
+              MLShelf
               <br />
-              <span className="text-4xl sm:text-5xl">Tiny ML Models for Everyone</span>
+              <span className="text-4xl sm:text-5xl lg:text-6xl bg-gradient-to-r from-yellow-200 to-pink-200 bg-clip-text text-transparent">
+                Your Tiny ML Model Hub
+              </span>
             </motion.h1>
             
             <motion.p
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.4 }}
-              className="text-xl text-gray-600 mb-12 max-w-3xl mx-auto"
+              className="text-xl text-white/90 mb-12 max-w-2xl leading-relaxed"
             >
-              Upload and download ML models under 10 MB. Optimized for low-resource devices, 
-              edge computing, and mobile applications.
+              Discover, share, and use ML models under 10 MB. Built for students, hobbyists, and edge developers.
             </motion.p>
 
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.6 }}
-              className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16"
+              className="flex flex-col sm:flex-row items-center lg:items-start lg:justify-start gap-4 mb-16"
             >
               <motion.div whileHover={{ scale: 1.05, y: -2 }} whileTap={{ scale: 0.95 }}>
                 <Link
                   to="/register"
-                  className="bg-blue-600 text-white px-8 py-4 rounded-xl hover:bg-blue-700 transition-colors font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200 flex items-center space-x-2"
+                  className="bg-white text-purple-600 px-8 py-4 rounded-xl hover:bg-gray-50 transition-colors font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200 flex items-center space-x-2"
                 >
                   <Upload className="w-5 h-5" />
                   <span>Get Started</span>
@@ -71,41 +79,105 @@ export function LandingPage() {
                 whileHover={{ scale: 1.05, y: -2 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={scrollToExplore}
-                className="bg-white text-gray-700 px-8 py-4 rounded-xl hover:bg-gray-50 transition-colors font-semibold shadow-lg hover:shadow-xl border border-gray-200 transform hover:-translate-y-0.5 transition-all duration-200 flex items-center space-x-2"
+                className="bg-white/20 backdrop-blur-sm text-white px-8 py-4 rounded-xl hover:bg-white/30 transition-colors font-semibold shadow-lg hover:shadow-xl border border-white/30 transform hover:-translate-y-0.5 transition-all duration-200 flex items-center space-x-2"
               >
                 <Download className="w-5 h-5" />
                 <span>Explore Models</span>
               </motion.button>
             </motion.div>
+            </div>
 
-            {/* Stats */}
+            {/* Right Side - Visual Element */}
+            <div className="hidden lg:block">
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.8 }}
-              className="grid grid-cols-1 sm:grid-cols-3 gap-8 max-w-2xl mx-auto"
+              initial={{ opacity: 0, x: 50 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.8, delay: 0.8 }}
+              className="relative"
             >
-              <motion.div whileHover={{ scale: 1.05 }} className="text-center">
-                <div className="bg-white rounded-xl p-6 shadow-md">
-                  <Brain className="w-8 h-8 text-blue-600 mx-auto mb-3" />
-                  <div className="text-2xl font-bold text-gray-900">10 MB</div>
-                  <div className="text-sm text-gray-600">Max file size</div>
+              {/* 3D Cube Animation */}
+              <motion.div
+                animate={{ 
+                  rotateY: [0, 360],
+                  rotateX: [0, 15, 0, -15, 0]
+                }}
+                transition={{ 
+                  duration: 20,
+                  repeat: Infinity,
+                  ease: "linear"
+                }}
+                className="w-80 h-80 mx-auto relative"
+              >
+                <div className="absolute inset-0 bg-gradient-to-br from-white/20 to-white/5 backdrop-blur-sm rounded-3xl border border-white/20 shadow-2xl transform rotate-12">
+                  <div className="p-8 h-full flex flex-col justify-center">
+                    <div className="text-white/90 font-mono text-sm mb-4">
+                      <div className="text-yellow-300"># Load tiny ML model</div>
+                      <div className="text-blue-300">import tensorflow as tf</div>
+                      <div className="mt-2">model = tf.keras.models.</div>
+                      <div className="ml-4">load_model('tiny_model.h5')</div>
+                      <div className="mt-2 text-green-300"># Only 2.3 MB!</div>
+                    </div>
+                    <div className="flex items-center space-x-2 text-white/70">
+                      <Database className="w-4 h-4" />
+                      <span className="text-xs">2.3 MB • TensorFlow</span>
+                    </div>
+                  </div>
                 </div>
               </motion.div>
-              <motion.div whileHover={{ scale: 1.05 }} className="text-center">
-                <div className="bg-white rounded-xl p-6 shadow-md">
-                  <Users className="w-8 h-8 text-emerald-600 mx-auto mb-3" />
-                  <div className="text-2xl font-bold text-gray-900">Free</div>
-                  <div className="text-sm text-gray-600">Always</div>
+              
+              {/* Floating Elements */}
+              <motion.div
+                animate={{ y: [-10, 10, -10] }}
+                transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+                className="absolute top-10 -right-10 bg-white/10 backdrop-blur-sm rounded-2xl p-4 border border-white/20"
+              >
+                <div className="flex items-center space-x-2 text-white">
+                  <Brain className="w-5 h-5" />
+                  <span className="text-sm font-medium">10 MB Max</span>
                 </div>
               </motion.div>
-              <motion.div whileHover={{ scale: 1.05 }} className="text-center">
-                <div className="bg-white rounded-xl p-6 shadow-md">
-                  <Download className="w-8 h-8 text-purple-600 mx-auto mb-3" />
-                  <div className="text-2xl font-bold text-gray-900">Instant</div>
-                  <div className="text-sm text-gray-600">Downloads</div>
+              
+              <motion.div
+                animate={{ y: [10, -10, 10] }}
+                transition={{ duration: 4, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+                className="absolute bottom-20 -left-10 bg-white/10 backdrop-blur-sm rounded-2xl p-4 border border-white/20"
+              >
+                <div className="flex items-center space-x-2 text-white">
+                  <Download className="w-5 h-5" />
+                  <span className="text-sm font-medium">Instant Download</span>
                 </div>
               </motion.div>
+            </motion.div>
+            </div>
+          </div>
+          
+          {/* Stats Section - Moved below hero content */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 1.0 }}
+            className="grid grid-cols-1 sm:grid-cols-3 gap-8 max-w-4xl mx-auto mt-20"
+          >
+            <motion.div whileHover={{ scale: 1.05 }} className="text-center">
+              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">
+                <Brain className="w-8 h-8 text-yellow-300 mx-auto mb-3" />
+                <div className="text-2xl font-bold text-white">10 MB</div>
+                <div className="text-sm text-white/70">Max file size</div>
+              </div>
+            </motion.div>
+            <motion.div whileHover={{ scale: 1.05 }} className="text-center">
+              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">
+                <Users className="w-8 h-8 text-green-300 mx-auto mb-3" />
+                <div className="text-2xl font-bold text-white">Free</div>
+                <div className="text-sm text-white/70">Always</div>
+              </div>
+            </motion.div>
+            <motion.div whileHover={{ scale: 1.05 }} className="text-center">
+              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">
+                <Download className="w-8 h-8 text-blue-300 mx-auto mb-3" />
+                <div className="text-2xl font-bold text-white">Instant</div>
+                <div className="text-sm text-white/70">Downloads</div>
+              </div>
             </motion.div>
           </div>
         </div>
