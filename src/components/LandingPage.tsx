@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Brain, Download, Upload, Users, Zap, MousePointer, Cpu, ArrowRight } from 'lucide-react';
+import { Brain, Download, Upload, Users, Zap, MousePointer, Cpu, ArrowRight, Database } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 export function LandingPage() {
@@ -149,6 +149,7 @@ export function LandingPage() {
               </motion.div>
             </motion.div>
             </div>
+          </div>
           
           {/* Stats Section - Moved below hero content */}
           <motion.div
@@ -178,7 +179,7 @@ export function LandingPage() {
                 <div className="text-sm text-white/70">Downloads</div>
               </div>
             </motion.div>
-          </div>
+          </motion.div>
         </div>
       </section>
 
@@ -331,38 +332,6 @@ export function LandingPage() {
           </div>
         </div>
       </section>
-          
-          {/* Stats Section - Moved below hero content */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 1.0 }}
-            className="grid grid-cols-1 sm:grid-cols-3 gap-8 max-w-4xl mx-auto mt-20"
-          >
-            <motion.div whileHover={{ scale: 1.05 }} className="text-center">
-              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">
-                <Brain className="w-8 h-8 text-yellow-300 mx-auto mb-3" />
-                <div className="text-2xl font-bold text-white">10 MB</div>
-                <div className="text-sm text-white/70">Max file size</div>
-              </div>
-            </motion.div>
-            <motion.div whileHover={{ scale: 1.05 }} className="text-center">
-              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">
-                <Users className="w-8 h-8 text-green-300 mx-auto mb-3" />
-                <div className="text-2xl font-bold text-white">Free</div>
-                <div className="text-sm text-white/70">Always</div>
-              </div>
-            </motion.div>
-            <motion.div whileHover={{ scale: 1.05 }} className="text-center">
-              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">
-                <Download className="w-8 h-8 text-blue-300 mx-auto mb-3" />
-                <div className="text-2xl font-bold text-white">Instant</div>
-                <div className="text-sm text-white/70">Downloads</div>
-              </div>
-            </motion.div>
-          </motion.div>
-        </div>
-      </section>
 
       {/* Footer */}
       <footer className="bg-gray-900 text-white py-12">
@@ -385,6 +354,4 @@ export function LandingPage() {
       </footer>
     </div>
   );
-}
-  )
 }
