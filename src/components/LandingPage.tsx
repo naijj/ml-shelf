@@ -149,7 +149,6 @@ export function LandingPage() {
               </motion.div>
             </motion.div>
             </div>
-          </div>
           
           {/* Stats Section - Moved below hero content */}
           <motion.div
@@ -385,4 +384,6 @@ export function LandingPage() {
       </footer>
     </div>
   );
+}
+  )
 }
