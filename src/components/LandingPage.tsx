@@ -331,33 +331,34 @@ export function LandingPage() {
           </div>
         </div>
       </section>
-
-      {/* CTA Section */}
-      <section className="py-20 bg-gradient-to-r from-blue-600 to-purple-600">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          
+          {/* Stats Section - Moved below hero content */}
           <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 1.0 }}
+            className="grid grid-cols-1 sm:grid-cols-3 gap-8 max-w-4xl mx-auto mt-20"
           >
-            <h2 className="text-4xl sm:text-5xl font-bold text-white mb-6">
-              Start sharing tiny ML models today
-            </h2>
-            <p className="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">
-              Join the community of developers building efficient AI applications for edge devices and mobile platforms.
-            </p>
-            <motion.div
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              <Link
-                to="/register"
-                className="bg-white text-blue-600 px-8 py-4 rounded-xl hover:bg-gray-50 transition-colors font-semibold text-lg shadow-lg hover:shadow-xl inline-flex items-center space-x-2"
-              >
-                <Brain className="w-6 h-6" />
-                <span>Sign Up Free</span>
-              </Link>
+            <motion.div whileHover={{ scale: 1.05 }} className="text-center">
+              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">
+                <Brain className="w-8 h-8 text-yellow-300 mx-auto mb-3" />
+                <div className="text-2xl font-bold text-white">10 MB</div>
+                <div className="text-sm text-white/70">Max file size</div>
+              </div>
+            </motion.div>
+            <motion.div whileHover={{ scale: 1.05 }} className="text-center">
+              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">
+                <Users className="w-8 h-8 text-green-300 mx-auto mb-3" />
+                <div className="text-2xl font-bold text-white">Free</div>
+                <div className="text-sm text-white/70">Always</div>
+              </div>
+            </motion.div>
+            <motion.div whileHover={{ scale: 1.05 }} className="text-center">
+              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">
+                <Download className="w-8 h-8 text-blue-300 mx-auto mb-3" />
+                <div className="text-2xl font-bold text-white">Instant</div>
+                <div className="text-sm text-white/70">Downloads</div>
+              </div>
             </motion.div>
           </motion.div>
         </div>
