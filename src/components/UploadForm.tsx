@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Upload, FileText, Tag, Database, Brain, X } from 'lucide-react';
+import { Upload, FileText, Tag, Database, Brain, X, Sparkles, CheckCircle, Loader } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../hooks/useAuth';
 import { useModels } from '../hooks/useModels';
 
@@ -31,6 +32,8 @@ export function UploadForm({ onSuccess }: UploadFormProps) {
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState('');
   const [dragOver, setDragOver] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const [uploadSuccess, setUploadSuccess] = useState(false);
 
   const { user } = useAuth();
   const { uploadModel } = useModels();
@@ -46,6 +49,20 @@ export function UploadForm({ onSuccess }: UploadFormProps) {
       tags: ''
     });
     setError('');
+  };
+
+  const simulateProgress = () => {
+    setUploadProgress(0);
+    const interval = setInterval(() => {
+      setUploadProgress(prev => {
+        if (prev >= 90) {
+          clearInterval(interval);
+          return 90;
+        }
+        return prev + Math.random() * 15;
+      });
+    }, 200);
+    return interval;
   };
 
   const handleInputChange = (field: string, value: string) => {
@@ -120,6 +137,9 @@ export function UploadForm({ onSuccess }: UploadFormProps) {
 
     setUploading(true);
     setError('');
+    setUploadSuccess(false);
+    
+    const progressInterval = simulateProgress();
 
     try {
       // Prepare tags array
@@ -145,6 +165,7 @@ export function UploadForm({ onSuccess }: UploadFormProps) {
         metadata
       });
 
+      setUploadProgress(95);
       const result = await uploadModel(file!, metadata, user!.id);
 
       if (result.error) {
@@ -152,13 +173,26 @@ export function UploadForm({ onSuccess }: UploadFormProps) {
       }
 
       console.log('Upload successful!');
+      setUploadProgress(100);
+      setUploadSuccess(true);
+      
+      // Show success animation for 2 seconds
+      setTimeout(() => {
+        resetForm();
+        setUploadSuccess(false);
+        setUploadProgress(0);
+        onSuccess?.();
+      }, 2000);
       resetForm();
       onSuccess?.();
       
     } catch (err) {
       console.error('Upload failed:', err);
+      clearInterval(progressInterval);
+      setUploadProgress(0);
       setError(err instanceof Error ? err.message : 'Upload failed. Please try again.');
     } finally {
+      clearInterval(progressInterval);
       setUploading(false);
     }
   };
@@ -168,27 +202,126 @@ export function UploadForm({ onSuccess }: UploadFormProps) {
   };
 
   return (
-    <div className="bg-white rounded-xl shadow-md border border-gray-200">
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.6 }}
+      className="bg-white/95 backdrop-blur-sm rounded-2xl shadow-xl border border-white/20 relative overflow-hidden"
+    >
+      {/* Animated Background */}
+      <div className="absolute inset-0 bg-gradient-to-br from-purple-50/50 to-blue-50/50 opacity-50" />
+      
+      {/* Success Overlay */}
+      <AnimatePresence>
+        {uploadSuccess && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.8 }}
+            className="absolute inset-0 bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center z-50 rounded-2xl"
+          >
+            <div className="text-center text-white">
+              <motion.div
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
+              >
+                <CheckCircle className="w-16 h-16 mx-auto mb-4" />
+              </motion.div>
+              <motion.h3
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.4 }}
+                className="text-2xl font-bold mb-2"
+              >
+                Upload Successful! 🎉
+              </motion.h3>
+              <motion.p
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.6 }}
+                className="text-green-100"
+              >
+                Your model is now available to the community
+              </motion.p>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       <div className="p-6">
-        <div className="flex items-center justify-between mb-6">
-          <h2 className="text-xl font-semibold text-gray-900 flex items-center">
-            <Upload className="w-5 h-5 mr-2 text-blue-600" />
+        <div className="flex items-center justify-between mb-6 relative z-10">
+          <motion.h2
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            className="text-2xl font-bold text-gray-900 flex items-center"
+          >
+            <motion.div
+              animate={{ rotate: uploading ? 360 : 0 }}
+              transition={{ duration: 2, repeat: uploading ? Infinity : 0, ease: "linear" }}
+            >
+              <Upload className="w-6 h-6 mr-3 text-purple-600" />
+            </motion.div>
             Upload New Model
-          </h2>
-          <button
+            <motion.div
+              animate={{ scale: [1, 1.2, 1] }}
+              transition={{ duration: 2, repeat: Infinity }}
+              className="ml-2"
+            >
+              <Sparkles className="w-5 h-5 text-yellow-500" />
+            </motion.div>
+          </motion.h2>
+          <motion.button
+            whileHover={{ scale: 1.1, rotate: 90 }}
+            whileTap={{ scale: 0.9 }}
             onClick={resetForm}
-            className="text-gray-400 hover:text-gray-600 transition-colors"
+            className="text-gray-400 hover:text-gray-600 transition-colors p-2 hover:bg-gray-100 rounded-full"
             title="Clear form"
           >
             <X className="w-5 h-5" />
-          </button>
+          </motion.button>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-6 relative z-10">
+          {/* Progress Bar */}
+          <AnimatePresence>
+            {uploading && (
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: "auto" }}
+                exit={{ opacity: 0, height: 0 }}
+                className="mb-6"
+              >
+                <div className="bg-gray-200 rounded-full h-3 overflow-hidden">
+                  <motion.div
+                    initial={{ width: 0 }}
+                    animate={{ width: `${uploadProgress}%` }}
+                    transition={{ duration: 0.5 }}
+                    className="h-full bg-gradient-to-r from-purple-600 to-blue-600 rounded-full relative"
+                  >
+                    <motion.div
+                      animate={{ x: [-20, 100] }}
+                      transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                      className="absolute inset-0 bg-white/30 w-5 skew-x-12"
+                    />
+                  </motion.div>
+                </div>
+                <div className="flex items-center justify-between mt-2">
+                  <span className="text-sm text-gray-600">Uploading your model...</span>
+                  <span className="text-sm font-semibold text-purple-600">{Math.round(uploadProgress)}%</span>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
           {error && (
-            <div className="p-4 bg-red-50 border border-red-200 rounded-lg">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="p-4 bg-red-50 border border-red-200 rounded-lg"
+            >
               <p className="text-red-700 text-sm font-medium">{error}</p>
-            </div>
+            </motion.div>
           )}
 
           {/* File Upload Area */}
@@ -200,14 +333,23 @@ export function UploadForm({ onSuccess }: UploadFormProps) {
               onDrop={handleDrop}
               onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
               onDragLeave={() => setDragOver(false)}
-              className={`relative border-2 border-dashed rounded-lg p-8 text-center transition-all cursor-pointer ${
+              className={`relative border-2 border-dashed rounded-xl p-8 text-center transition-all cursor-pointer ${
                 dragOver 
-                  ? 'border-blue-400 bg-blue-50' 
+                  ? 'border-purple-400 bg-purple-50 scale-105' 
                   : file 
                   ? 'border-green-400 bg-green-50' 
-                  : 'border-gray-300 hover:border-gray-400 hover:bg-gray-50'
+                  : 'border-gray-300 hover:border-purple-400 hover:bg-purple-50'
               }`}
             >
+              {/* Animated Border */}
+              {dragOver && (
+                <motion.div
+                  animate={{ rotate: 360 }}
+                  transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+                  className="absolute inset-0 border-2 border-dashed border-purple-400 rounded-xl"
+                />
+              )}
+              
               <input
                 type="file"
                 onChange={(e) => e.target.files?.[0] && handleFileSelect(e.target.files[0])}
@@ -216,26 +358,49 @@ export function UploadForm({ onSuccess }: UploadFormProps) {
               />
               
               {file ? (
-                <div className="space-y-3">
-                  <FileText className="w-12 h-12 text-green-600 mx-auto" />
+                <motion.div
+                  initial={{ scale: 0.8, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  className="space-y-3"
+                >
+                  <motion.div
+                    animate={{ y: [-5, 5, -5] }}
+                    transition={{ duration: 2, repeat: Infinity }}
+                  >
+                    <FileText className="w-12 h-12 text-green-600 mx-auto" />
+                  </motion.div>
                   <div>
                     <p className="text-sm font-medium text-green-700">{file.name}</p>
                     <p className="text-xs text-green-600">{formatFileSize(file.size)}</p>
                   </div>
-                  <button
+                  <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
                     type="button"
                     onClick={(e) => {
                       e.stopPropagation();
                       setFile(null);
                     }}
-                    className="text-xs text-green-600 hover:text-green-700 underline"
+                    className="text-xs text-green-600 hover:text-green-700 underline font-medium"
                   >
                     Remove file
-                  </button>
-                </div>
+                  </motion.button>
+                </motion.div>
               ) : (
-                <div className="space-y-3">
-                  <Upload className="w-12 h-12 text-gray-400 mx-auto" />
+                <motion.div
+                  animate={{ y: dragOver ? [-10, 10, -10] : 0 }}
+                  transition={{ duration: 1, repeat: dragOver ? Infinity : 0 }}
+                  className="space-y-3"
+                >
+                  <motion.div
+                    animate={{ 
+                      scale: dragOver ? [1, 1.2, 1] : 1,
+                      rotate: dragOver ? [0, 10, -10, 0] : 0
+                    }}
+                    transition={{ duration: 0.5 }}
+                  >
+                    <Upload className="w-12 h-12 text-gray-400 mx-auto" />
+                  </motion.div>
                   <div>
                     <p className="text-sm font-medium text-gray-700">
                       Drop your model file here or click to browse
@@ -244,7 +409,7 @@ export function UploadForm({ onSuccess }: UploadFormProps) {
                       Maximum file size: 10 MB
                     </p>
                   </div>
-                </div>
+                </motion.div>
               )}
             </div>
           </div>
@@ -258,7 +423,7 @@ export function UploadForm({ onSuccess }: UploadFormProps) {
               type="text"
               value={formData.name}
               onChange={(e) => handleInputChange('name', e.target.value)}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
+              className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-purple-500 outline-none transition-all"
               placeholder="Enter a descriptive name for your model"
               maxLength={100}
             />
@@ -276,7 +441,7 @@ export function UploadForm({ onSuccess }: UploadFormProps) {
               value={formData.usage_instructions}
               onChange={(e) => handleInputChange('usage_instructions', e.target.value)}
               rows={6}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all resize-none font-mono text-sm"
+              className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-purple-500 outline-none transition-all resize-none font-mono text-sm"
               placeholder="Provide usage instructions or sample code:
 
 ```python
@@ -305,7 +470,7 @@ predictions = model.predict(your_data)
               onChange={(e) => handleInputChange('description', e.target.value)}
               rows={4}
               maxLength={500}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all resize-none"
+              className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-purple-500 outline-none transition-all resize-none"
               placeholder="Additional details about your model, capabilities, and use cases..."
             />
             <p className="text-xs text-gray-500 mt-1">
@@ -322,7 +487,7 @@ predictions = model.predict(your_data)
               <select
                 value={formData.framework}
                 onChange={(e) => handleInputChange('framework', e.target.value)}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
+                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-purple-500 outline-none transition-all"
               >
                 <option value="">Select framework (optional)</option>
                 {FRAMEWORKS.map(fw => (
@@ -339,7 +504,7 @@ predictions = model.predict(your_data)
                 type="text"
                 value={formData.format}
                 onChange={(e) => handleInputChange('format', e.target.value)}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
+                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-purple-500 outline-none transition-all"
                 placeholder="e.g., SavedModel, .pth, .onnx"
               />
             </div>
@@ -354,7 +519,7 @@ predictions = model.predict(your_data)
               type="text"
               value={formData.tags}
               onChange={(e) => handleInputChange('tags', e.target.value)}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
+              className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-purple-500 outline-none transition-all"
               placeholder="computer-vision, nlp, classification (comma-separated)"
             />
             <p className="text-xs text-gray-500 mt-1">
@@ -364,26 +529,46 @@ predictions = model.predict(your_data)
 
           {/* Submit Button */}
           <div className="pt-4">
-            <button
+            <motion.button
+              whileHover={{ scale: 1.02, y: -2 }}
+              whileTap={{ scale: 0.98 }}
               type="submit"
               disabled={uploading || !file || !formData.name.trim() || !formData.usage_instructions.trim()}
-              className="w-full bg-blue-600 text-white py-4 rounded-lg hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors flex items-center justify-center space-x-3 font-medium text-lg"
+              className="w-full bg-gradient-to-r from-purple-600 to-blue-600 text-white py-4 rounded-xl hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 flex items-center justify-center space-x-3 font-semibold text-lg relative overflow-hidden"
             >
+              {/* Button Background Animation */}
+              <motion.div
+                animate={{ x: uploading ? ['-100%', '100%'] : '-100%' }}
+                transition={{ duration: 1.5, repeat: uploading ? Infinity : 0, ease: "linear" }}
+                className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent skew-x-12"
+              />
+              
               {uploading ? (
                 <>
-                  <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                  <motion.div
+                    animate={{ rotate: 360 }}
+                    transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                  >
+                    <Loader className="w-6 h-6" />
+                  </motion.div>
                   <span>Uploading...</span>
                 </>
               ) : (
                 <>
-                  <Brain className="w-6 h-6" />
+                  <motion.div
+                    animate={{ scale: [1, 1.2, 1] }}
+                    transition={{ duration: 2, repeat: Infinity }}
+                  >
+                    <Brain className="w-6 h-6" />
+                  </motion.div>
                   <span>Upload Model</span>
+                  <Sparkles className="w-5 h-5" />
                 </>
               )}
-            </button>
+            </motion.button>
           </div>
         </form>
       </div>
-    </div>
+    </motion.div>
   );
 }

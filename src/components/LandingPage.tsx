@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Brain, Download, Upload, Users, Zap, MousePointer, Cpu, ArrowRight, Database } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { TopModelsSection } from './TopModelsSection';
 
 export function LandingPage() {
   const scrollToExplore = () => {
@@ -332,6 +333,9 @@ export function LandingPage() {
           </div>
         </div>
       </section>
+
+      {/* Top Downloaded Models Section */}
+      <TopModelsSection />
 
       {/* Footer */}
       <footer className="bg-gray-900 text-white py-12">
