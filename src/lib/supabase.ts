@@ -31,6 +31,7 @@ export type Database = {
           format: string | null;
           tags: string[] | null;
           downloads: number;
+          likes_count: number;
           created_at: string;
         };
         Insert: {
@@ -45,6 +46,7 @@ export type Database = {
           format?: string | null;
           tags?: string[] | null;
           downloads?: number;
+          likes_count?: number;
           created_at?: string;
         };
         Update: {
@@ -59,6 +61,7 @@ export type Database = {
           format?: string | null;
           tags?: string[] | null;
           downloads?: number;
+          likes_count?: number;
           created_at?: string;
         };
       };

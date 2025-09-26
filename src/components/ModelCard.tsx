@@ -1,6 +1,7 @@
 import React from 'react';
 import { Download, Tag, Calendar, User, Database, Eye } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { LikeButton } from './LikeButton';
 import { Database as DB } from '../lib/supabase';
 
 type Model = DB['public']['Tables']['models']['Row'];
@@ -100,9 +101,16 @@ export function ModelCard({ model, onDownload, onViewDetails }: ModelCardProps) 
         )}
 
         <div className="flex items-center justify-between pt-4 border-t border-gray-100 space-x-3">
-          <div className="flex items-center text-sm text-gray-500">
+          <div className="flex items-center space-x-3">
+            <div className="flex items-center text-sm text-gray-500">
             <Download className="w-4 h-4 mr-1" />
             <span>{model.downloads.toLocaleString()}</span>
+            </div>
+            <LikeButton 
+              modelId={model.id} 
+              likesCount={model.likes_count || 0}
+              showCount={true}
+            />
           </div>
           
           <div className="flex items-center space-x-2">
