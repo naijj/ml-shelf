@@ -63,7 +63,7 @@ export function ModelDetailModal({ model, isOpen, onClose, onDownload }: ModelDe
 
   const extractCodeFromMarkdown = (text: string) => {
     // Extract code from markdown code blocks
-    const codeBlockRegex = /```(\w+)?\n([\s\S]*?)```
+    const codeBlockRegex = /```(\w+)?\n([\s\S]*?)```/g;
     const matches = [...text.matchAll(codeBlockRegex)];
     
     if (matches.length > 0) {
