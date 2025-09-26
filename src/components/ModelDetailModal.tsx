@@ -58,7 +58,7 @@ export function ModelDetailModal({ model, isOpen, onClose, onDownload }: ModelDe
            text.includes('const ') || 
            text.includes('let ') || 
            text.includes('var ') ||
-           text.includes('```
+           text.includes('```');
   };
 
   const extractCodeFromMarkdown = (text: string) => {
