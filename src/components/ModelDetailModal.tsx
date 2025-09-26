@@ -1,5 +1,5 @@
 import React from 'react';
-import { X, Download, Calendar, User, Database, Tag, Code, FileText, Monitor, UserCircle } from 'lucide-react';
+import { X, Download, Calendar, User, Database, Tag, Code, FileText, Monitor, CircleUser as UserCircle } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { tomorrow } from 'react-syntax-highlighter/dist/esm/styles/prism';

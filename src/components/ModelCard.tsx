@@ -1,5 +1,5 @@
 import React from 'react';
-import { Download, Tag, Calendar, User, Database, Eye, UserCircle } from 'lucide-react';
+import { Download, Tag, Calendar, User, Database, Eye, CircleUser as UserCircle } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { LikeButton } from './LikeButton';
 import { Database as DB } from '../lib/supabase';
