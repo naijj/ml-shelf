@@ -3,15 +3,15 @@ import { Link } from 'react-router-dom';
 import { motion, useAnimation } from 'framer-motion';
 import { ChevronDown, Sparkles, Download, ArrowRight } from 'lucide-react';
 
-interface NeuralCanvasProps {
+interface LiquidEtherCanvasProps {
   className?: string;
 }
 
-const NeuralCanvas: React.FC<NeuralCanvasProps> = ({ className }) => {
+const LiquidEtherCanvas: React.FC<LiquidEtherCanvasProps> = ({ className }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const animationRef = useRef<number>();
-  const nodesRef = useRef<any[]>([]);
-  const connectionsRef = useRef<any[]>([]);
+  const particlesRef = useRef<any[]>([]);
+  const waveTimeRef = useRef(0);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -28,144 +28,152 @@ const NeuralCanvas: React.FC<NeuralCanvasProps> = ({ className }) => {
     resizeCanvas();
     window.addEventListener('resize', resizeCanvas);
 
-    // Neural network parameters
+    // Liquid ether parameters
     const isMobile = window.innerWidth < 768;
-    const nodeCount = isMobile ? 40 : 80;
-    const maxConnections = isMobile ? 2 : 3;
-    const connectionDistance = isMobile ? 120 : 150;
+    const particleCount = isMobile ? 60 : 120;
+    const waveCount = isMobile ? 3 : 5;
 
-    // Initialize nodes
-    const initNodes = () => {
-      nodesRef.current = [];
-      for (let i = 0; i < nodeCount; i++) {
-        nodesRef.current.push({
+    // Initialize floating particles
+    const initParticles = () => {
+      particlesRef.current = [];
+      for (let i = 0; i < particleCount; i++) {
+        particlesRef.current.push({
           x: Math.random() * canvas.width,
           y: Math.random() * canvas.height,
-          vx: (Math.random() - 0.5) * 0.5,
-          vy: (Math.random() - 0.5) * 0.5,
-          radius: Math.random() * 3 + 2,
-          pulsePhase: Math.random() * Math.PI * 2,
-          pulseSpeed: Math.random() * 0.02 + 0.01,
-          brightness: Math.random() * 0.5 + 0.5,
-          connections: []
+          vx: (Math.random() - 0.5) * 0.3,
+          vy: (Math.random() - 0.5) * 0.3,
+          radius: Math.random() * 4 + 1,
+          phase: Math.random() * Math.PI * 2,
+          speed: Math.random() * 0.01 + 0.005,
+          opacity: Math.random() * 0.6 + 0.2,
+          color: Math.random() > 0.5 ? 'purple' : 'blue',
+          floatAmplitude: Math.random() * 20 + 10,
+          floatSpeed: Math.random() * 0.02 + 0.01
         });
       }
     };
 
-    // Create connections between nearby nodes
-    const createConnections = () => {
-      connectionsRef.current = [];
-      nodesRef.current.forEach((node, i) => {
-        node.connections = [];
-        let connectionCount = 0;
+    // Draw flowing liquid waves
+    const drawLiquidWaves = (time: number) => {
+      const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+      gradient.addColorStop(0, 'rgba(147, 51, 234, 0.1)'); // purple
+      gradient.addColorStop(0.3, 'rgba(59, 130, 246, 0.15)'); // blue
+      gradient.addColorStop(0.7, 'rgba(147, 51, 234, 0.1)'); // purple
+      gradient.addColorStop(1, 'rgba(16, 185, 129, 0.05)'); // emerald
+      
+      ctx.fillStyle = gradient;
+      
+      for (let i = 0; i < waveCount; i++) {
+        ctx.beginPath();
+        const waveHeight = 60 + i * 20;
+        const frequency = 0.005 + i * 0.002;
+        const phase = time * 0.001 + i * Math.PI / 3;
         
-        nodesRef.current.forEach((otherNode, j) => {
-          if (i !== j && connectionCount < maxConnections) {
-            const dx = node.x - otherNode.x;
-            const dy = node.y - otherNode.y;
-            const distance = Math.sqrt(dx * dx + dy * dy);
-            
-            if (distance < connectionDistance) {
-              const connection = {
-                from: node,
-                to: otherNode,
-                distance,
-                sparkPhase: Math.random() * Math.PI * 2,
-                sparkSpeed: Math.random() * 0.03 + 0.01,
-                opacity: Math.max(0, 1 - distance / connectionDistance) * 0.3
-              };
-              
-              connectionsRef.current.push(connection);
-              node.connections.push(connection);
-              connectionCount++;
-            }
+        for (let x = 0; x <= canvas.width; x += 2) {
+          const y = canvas.height / 2 + 
+                   Math.sin(x * frequency + phase) * waveHeight +
+                   Math.sin(x * frequency * 2 + phase * 1.5) * (waveHeight / 3) +
+                   Math.sin(x * frequency * 0.5 + phase * 0.7) * (waveHeight / 2);
+          
+          if (x === 0) {
+            ctx.moveTo(x, y);
+          } else {
+            ctx.lineTo(x, y);
           }
-        });
-      });
+        }
+        
+        ctx.lineTo(canvas.width, canvas.height);
+        ctx.lineTo(0, canvas.height);
+        ctx.closePath();
+        ctx.fill();
+      }
     };
 
-    initNodes();
-    createConnections();
+    // Draw ethereal mist effect
+    const drawEtherealMist = (time: number) => {
+      const mistGradient = ctx.createRadialGradient(
+        canvas.width / 2, canvas.height / 2, 0,
+        canvas.width / 2, canvas.height / 2, canvas.width / 2
+      );
+      mistGradient.addColorStop(0, 'rgba(147, 51, 234, 0.05)');
+      mistGradient.addColorStop(0.5, 'rgba(59, 130, 246, 0.03)');
+      mistGradient.addColorStop(1, 'rgba(0, 0, 0, 0)');
+      
+      ctx.save();
+      ctx.globalCompositeOperation = 'screen';
+      ctx.fillStyle = mistGradient;
+      
+      // Animated mist rotation
+      ctx.translate(canvas.width / 2, canvas.height / 2);
+      ctx.rotate(time * 0.0001);
+      ctx.scale(1 + Math.sin(time * 0.001) * 0.1, 1 + Math.cos(time * 0.0015) * 0.1);
+      ctx.fillRect(-canvas.width / 2, -canvas.height / 2, canvas.width, canvas.height);
+      ctx.restore();
+    };
+
+    initParticles();
 
     // Animation loop
     const animate = () => {
-      ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+      waveTimeRef.current += 16; // ~60fps
+      
+      // Clear with subtle fade
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.02)';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-      // Update and draw connections
-      connectionsRef.current.forEach(connection => {
-        const { from, to } = connection;
-        
-        // Update spark animation
-        connection.sparkPhase += connection.sparkSpeed;
-        
-        // Draw connection line
-        const gradient = ctx.createLinearGradient(from.x, from.y, to.x, to.y);
-        gradient.addColorStop(0, `rgba(147, 51, 234, ${connection.opacity})`); // purple
-        gradient.addColorStop(0.5, `rgba(59, 130, 246, ${connection.opacity * 1.5})`); // blue
-        gradient.addColorStop(1, `rgba(147, 51, 234, ${connection.opacity})`); // purple
-        
-        ctx.strokeStyle = gradient;
-        ctx.lineWidth = 1;
-        ctx.beginPath();
-        ctx.moveTo(from.x, from.y);
-        ctx.lineTo(to.x, to.y);
-        ctx.stroke();
+      // Draw liquid waves
+      drawLiquidWaves(waveTimeRef.current);
+      
+      // Draw ethereal mist
+      drawEtherealMist(waveTimeRef.current);
 
-        // Draw electric spark
-        const sparkIntensity = Math.sin(connection.sparkPhase) * 0.5 + 0.5;
-        if (sparkIntensity > 0.7) {
-          const sparkX = from.x + (to.x - from.x) * (sparkIntensity - 0.7) / 0.3;
-          const sparkY = from.y + (to.y - from.y) * (sparkIntensity - 0.7) / 0.3;
-          
-          ctx.shadowBlur = 10;
-          ctx.shadowColor = '#60A5FA';
-          ctx.fillStyle = `rgba(96, 165, 250, ${sparkIntensity})`;
-          ctx.beginPath();
-          ctx.arc(sparkX, sparkY, 2, 0, Math.PI * 2);
-          ctx.fill();
-          ctx.shadowBlur = 0;
-        }
-      });
-
-      // Update and draw nodes
-      nodesRef.current.forEach(node => {
-        // Update position
-        node.x += node.vx;
-        node.y += node.vy;
+      // Update and draw floating particles
+      particlesRef.current.forEach(particle => {
+        // Update phase for floating motion
+        particle.phase += particle.floatSpeed;
+        
+        // Floating motion
+        particle.x += particle.vx + Math.sin(particle.phase) * 0.1;
+        particle.y += particle.vy + Math.cos(particle.phase * 1.3) * 0.1;
 
         // Bounce off edges
-        if (node.x < 0 || node.x > canvas.width) node.vx *= -1;
-        if (node.y < 0 || node.y > canvas.height) node.vy *= -1;
+        if (particle.x < 0 || particle.x > canvas.width) particle.vx *= -1;
+        if (particle.y < 0 || particle.y > canvas.height) particle.vy *= -1;
 
         // Keep in bounds
-        node.x = Math.max(0, Math.min(canvas.width, node.x));
-        node.y = Math.max(0, Math.min(canvas.height, node.y));
+        particle.x = Math.max(0, Math.min(canvas.width, particle.x));
+        particle.y = Math.max(0, Math.min(canvas.height, particle.y));
 
-        // Update pulse
-        node.pulsePhase += node.pulseSpeed;
-        const pulseIntensity = Math.sin(node.pulsePhase) * 0.3 + 0.7;
+        // Update glow intensity
+        const glowIntensity = Math.sin(particle.phase) * 0.4 + 0.6;
+        const floatOffset = Math.sin(particle.phase * 2) * particle.floatAmplitude;
 
-        // Draw node with glow
-        const glowRadius = node.radius * 3;
+        // Draw particle with ethereal glow
+        const glowRadius = particle.radius * 4;
         const gradient = ctx.createRadialGradient(
-          node.x, node.y, 0,
-          node.x, node.y, glowRadius
+          particle.x, particle.y + floatOffset * 0.1, 0,
+          particle.x, particle.y + floatOffset * 0.1, glowRadius
         );
         
-        gradient.addColorStop(0, `rgba(147, 51, 234, ${pulseIntensity * node.brightness})`);
-        gradient.addColorStop(0.3, `rgba(59, 130, 246, ${pulseIntensity * node.brightness * 0.6})`);
-        gradient.addColorStop(1, 'rgba(147, 51, 234, 0)');
+        if (particle.color === 'purple') {
+          gradient.addColorStop(0, `rgba(147, 51, 234, ${glowIntensity * particle.opacity})`);
+          gradient.addColorStop(0.4, `rgba(168, 85, 247, ${glowIntensity * particle.opacity * 0.6})`);
+          gradient.addColorStop(1, 'rgba(147, 51, 234, 0)');
+        } else {
+          gradient.addColorStop(0, `rgba(59, 130, 246, ${glowIntensity * particle.opacity})`);
+          gradient.addColorStop(0.4, `rgba(96, 165, 250, ${glowIntensity * particle.opacity * 0.6})`);
+          gradient.addColorStop(1, 'rgba(59, 130, 246, 0)');
+        }
 
         ctx.fillStyle = gradient;
         ctx.beginPath();
-        ctx.arc(node.x, node.y, glowRadius, 0, Math.PI * 2);
+        ctx.arc(particle.x, particle.y + floatOffset * 0.1, glowRadius, 0, Math.PI * 2);
         ctx.fill();
 
-        // Draw core
-        ctx.fillStyle = `rgba(255, 255, 255, ${pulseIntensity * node.brightness})`;
+        // Draw particle core
+        ctx.fillStyle = `rgba(255, 255, 255, ${glowIntensity * particle.opacity * 0.8})`;
         ctx.beginPath();
-        ctx.arc(node.x, node.y, node.radius, 0, Math.PI * 2);
+        ctx.arc(particle.x, particle.y + floatOffset * 0.1, particle.radius, 0, Math.PI * 2);
         ctx.fill();
       });
 
@@ -256,8 +264,8 @@ export function HeroSection() {
 
   return (
     <section className="relative min-h-screen bg-black overflow-hidden">
-      {/* Neural Network Background */}
-      <NeuralCanvas className="z-0" />
+      {/* Liquid Ether Background */}
+      <LiquidEtherCanvas className="z-0" />
 
       {/* Gradient Overlay */}
       <div className="absolute inset-0 bg-gradient-to-br from-purple-900/20 via-transparent to-blue-900/20 z-10" />
