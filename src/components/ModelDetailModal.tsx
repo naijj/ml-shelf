@@ -1,5 +1,5 @@
 import React from 'react';
-import { X, Download, Calendar, User, Database, Tag, Code, FileText, Monitor, Smartphone, Server } from 'lucide-react';
+import { X, Download, Calendar, User, Database, Tag, Code, FileText, Monitor } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { tomorrow } from 'react-syntax-highlighter/dist/esm/styles/prism';
@@ -58,18 +58,18 @@ export function ModelDetailModal({ model, isOpen, onClose, onDownload }: ModelDe
            text.includes('const ') || 
            text.includes('let ') || 
            text.includes('var ') ||
-           text.includes('```');
+           text.includes('```
   };
 
   const extractCodeFromMarkdown = (text: string) => {
     // Extract code from markdown code blocks
-    const codeBlockRegex = /```(\w+)?\n([\s\S]*?)```/g;
+    const codeBlockRegex = /```(\w+)?\n([\s\S]*?)```
     const matches = [...text.matchAll(codeBlockRegex)];
     
     if (matches.length > 0) {
       return {
-        language: matches[0][1] || 'python',
-        code: matches[0][2].trim()
+        language: matches[1] || 'python',
+        code: matches.trim()[2]
       };
     }
     
