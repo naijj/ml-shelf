@@ -1,5 +1,5 @@
 import React from 'react';
-import { Download, Tag, Calendar, User, Database, Eye } from 'lucide-react';
+import { Download, Tag, Calendar, User, Database, Eye, UserCircle } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { LikeButton } from './LikeButton';
 import { Database as DB } from '../lib/supabase';
@@ -10,9 +10,10 @@ interface ModelCardProps {
   model: Model;
   onDownload: (model: Model) => void;
   onViewDetails?: (model: Model) => void;
+  uploaderEmail?: string;
 }
 
-export function ModelCard({ model, onDownload, onViewDetails }: ModelCardProps) {
+export function ModelCard({ model, onDownload, onViewDetails, uploaderEmail }: ModelCardProps) {
   const formatSize = (bytes: number) => {
     if (bytes < 1024) return `${bytes} B`;
     if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
@@ -25,6 +26,13 @@ export function ModelCard({ model, onDownload, onViewDetails }: ModelCardProps) 
       month: 'short',
       day: 'numeric'
     });
+  };
+
+  const getUploaderName = () => {
+    if (uploaderEmail) {
+      return uploaderEmail.split('@')[0];
+    }
+    return 'Anonymous';
   };
 
   const getFrameworkColor = (framework: string | null) => {
@@ -69,6 +77,12 @@ export function ModelCard({ model, onDownload, onViewDetails }: ModelCardProps) 
         )}
 
         <div className="space-y-2 mb-4">
+          {/* Uploader Info */}
+          <div className="flex items-center text-sm text-gray-500">
+            <UserCircle className="w-4 h-4 mr-2" />
+            <span>by {getUploaderName()}</span>
+          </div>
+          
           {model.format && (
             <div className="flex items-center text-sm text-gray-500">
               <Database className="w-4 h-4 mr-2" />
@@ -108,8 +122,8 @@ export function ModelCard({ model, onDownload, onViewDetails }: ModelCardProps) 
             </div>
             <LikeButton 
               modelId={model.id} 
-              likesCount={model.likes_count || 0}
               showCount={true}
+              size="sm"
             />
           </div>
           
