@@ -6,58 +6,52 @@ import Particles from '@tsparticles/react';
 import { loadSlim } from '@tsparticles/slim';
 import type { Container, Engine } from '@tsparticles/engine';
 
-interface ShuffleTextProps {
+interface RotatingTextProps {
   text: string;
   className?: string;
-  onHover?: boolean;
+  texts?: string[];
+  interval?: number;
 }
 
-const ShuffleText: React.FC<ShuffleTextProps> = ({ text, className = '', onHover = false }) => {
-  const [displayText, setDisplayText] = useState(text);
-  const [isAnimating, setIsAnimating] = useState(false);
-  
-  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()';
-  
-  const shuffleText = useCallback(() => {
-    if (isAnimating) return;
-    setIsAnimating(true);
-    
-    let iteration = 0;
-    const interval = setInterval(() => {
-      setDisplayText(prev => 
-        prev.split('').map((char, index) => {
-          if (index < iteration) {
-            return text[index];
-          }
-          return chars[Math.floor(Math.random() * chars.length)];
-        }).join('')
-      );
-      
-      if (iteration >= text.length) {
-        clearInterval(interval);
-        setDisplayText(text);
-        setIsAnimating(false);
-      }
-      
-      iteration += 1 / 3;
-    }, 30);
-  }, [text, isAnimating]);
+const RotatingText: React.FC<RotatingTextProps> = ({ 
+  text, 
+  className = '', 
+  texts = [text], 
+  interval = 3000 
+}) => {
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [isVisible, setIsVisible] = useState(true);
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      shuffleText();
-    }, 500);
-    return () => clearTimeout(timer);
-  }, [shuffleText]);
+    if (texts.length <= 1) return;
+
+    const rotateInterval = setInterval(() => {
+      setIsVisible(false);
+      
+      setTimeout(() => {
+        setCurrentIndex((prev) => (prev + 1) % texts.length);
+        setIsVisible(true);
+      }, 300); // Half of the transition duration
+    }, interval);
+
+    return () => clearInterval(rotateInterval);
+  }, [texts, interval]);
 
   return (
-    <span 
+    <motion.span
       className={className}
-      onMouseEnter={onHover ? shuffleText : undefined}
-      style={{ fontFamily: 'monospace' }}
+      animate={{
+        opacity: isVisible ? 1 : 0,
+        y: isVisible ? 0 : -20,
+        scale: isVisible ? 1 : 0.95
+      }}
+      transition={{
+        duration: 0.3,
+        ease: "easeInOut"
+      }}
     >
-      {displayText}
-    </span>
+      {texts[currentIndex]}
+    </motion.span>
   );
 };
 
@@ -186,15 +180,25 @@ export function HeroSection() {
                 transition={{ duration: 0.8, delay: 0.2 }}
                 className="text-5xl sm:text-6xl lg:text-7xl font-bold text-white mb-6 leading-tight"
               >
-                <ShuffleText 
+                <RotatingText 
                   text="Upload & Discover"
+                  texts={[
+                    "Upload & Discover",
+                    "Share & Deploy", 
+                    "Build & Scale"
+                  ]}
                   className="block bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent"
-                  onHover={true}
+                  interval={4000}
                 />
-                <ShuffleText 
+                <RotatingText 
                   text="Tiny ML Models"
+                  texts={[
+                    "Tiny ML Models",
+                    "Edge AI Solutions",
+                    "Mobile-Ready AI"
+                  ]}
                   className="block bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent mt-2"
-                  onHover={true}
+                  interval={4200}
                 />
               </motion.h1>
 
@@ -203,7 +207,7 @@ export function HeroSection() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: 0.6 }}
-                className="text-xl text-gray-300 mb-12 max-w-2xl mx-auto lg:mx-0 leading-relaxed min-h-[3rem]"
+                className="text-xl text-gray-300 mb-12 max-w-2xl mx-auto lg:mx-0 leading-relaxed"
               >
                 Share, discover, and deploy machine learning models under 10MB. 
                 Perfect for edge computing, mobile apps, and IoT devices.
