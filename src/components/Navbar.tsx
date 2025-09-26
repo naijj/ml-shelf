@@ -1,12 +1,17 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Brain, LogOut, User, Sparkles } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { motion, useScroll, useTransform } from 'framer-motion';
 import { useAuth } from '../hooks/useAuth';
 
 export function Navbar() {
   const { user, signOut } = useAuth();
   const location = useLocation();
+  const { scrollY } = useScroll();
+  
+  // Transform scroll position to background opacity and blur
+  const backgroundOpacity = useTransform(scrollY, [0, 100], [0, 0.95]);
+  const backdropBlur = useTransform(scrollY, [0, 100], [0, 12]);
 
   const handleSignOut = async () => {
     await signOut();
@@ -19,8 +24,18 @@ export function Navbar() {
       initial={{ opacity: 0, y: -20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6 }}
-      className="bg-white/95 backdrop-blur-md shadow-lg border-b border-white/20 sticky top-0 z-50"
+      style={{
+        backgroundColor: useTransform(backgroundOpacity, (value) => `rgba(255, 255, 255, ${value})`),
+        backdropFilter: useTransform(backdropBlur, (value) => `blur(${value}px)`),
+      }}
+      className="sticky top-0 z-50 border-b border-white/20 transition-shadow duration-300"
     >
+      <motion.div
+        style={{
+          boxShadow: useTransform(scrollY, [0, 100], ['0 0 0 rgba(0,0,0,0)', '0 4px 20px rgba(0,0,0,0.1)']),
+        }}
+        className="w-full"
+      >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           <motion.div
@@ -150,6 +165,7 @@ export function Navbar() {
           </nav>
         </div>
       </div>
+      </motion.div>
     </motion.header>
   );
 }
