@@ -84,7 +84,7 @@ export function LikeButton({ modelId, showCount = false, size = 'md' }: LikeButt
           className="font-medium"
         >
           {likeCount}
-        </span>
+        </motion.span>
       )}
     </motion.button>
   );
