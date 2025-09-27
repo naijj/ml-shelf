@@ -4,6 +4,7 @@ import { Brain, Download, Upload, Users, Zap, MousePointer, Cpu, ArrowRight, Dat
 import { motion } from 'framer-motion';
 import { HeroSection } from './HeroSection';
 import { TopModelsSection } from './TopModelsSection';
+import './GradientBlinds.css';
 
 export function LandingPage() {
   const scrollToExplore = () => {
@@ -19,14 +20,15 @@ export function LandingPage() {
       <HeroSection />
 
       {/* Why MLShelf Section */}
-      <section id="next-section" className="py-20 bg-white">
+      <section id="next-section" className="py-20 bg-white relative overflow-hidden">
+        <div className="absolute inset-0 subtle-gradient-blinds"></div>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
-            className="text-center mb-16"
+            className="text-center mb-16 relative z-10"
           >
             <h2 className="text-4xl font-bold text-gray-900 mb-6">
               Why Choose MLShelf?
@@ -36,7 +38,7 @@ export function LandingPage() {
             </p>
           </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 relative z-10">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -89,14 +91,15 @@ export function LandingPage() {
       </section>
 
       {/* How It Works Section */}
-      <section id="how-it-works" className="py-20 bg-gradient-to-br from-gray-50 to-blue-50">
+      <section id="how-it-works" className="py-20 bg-gradient-to-br from-gray-50 to-blue-50 relative overflow-hidden">
+        <div className="absolute inset-0 subtle-gradient-blinds"></div>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
-            className="text-center mb-16"
+            className="text-center mb-16 relative z-10"
           >
             <h2 className="text-4xl font-bold text-gray-900 mb-6">
               How It Works
@@ -106,7 +109,7 @@ export function LandingPage() {
             </p>
           </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 relative z-10">
             <motion.div
               initial={{ opacity: 0, x: -50 }}
               whileInView={{ opacity: 1, x: 0 }}
