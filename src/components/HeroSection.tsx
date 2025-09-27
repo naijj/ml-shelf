@@ -120,30 +120,3 @@ export function HeroSection({ onShowAuth, onExploreModels }: HeroSectionProps) {
     </div>
   );
 }
-                <div className="bg-white rounded-xl p-6 shadow-md">
-                  <Brain className="w-8 h-8 text-blue-600 mx-auto mb-3" />
-                  <div className="text-2xl font-bold text-gray-900">10 MB</div>
-                  <div className="text-sm text-gray-600">Max file size</div>
-                </div>
-              </motion.div>
-              <motion.div whileHover={{ scale: 1.05 }} className="text-center">
-                <div className="bg-white rounded-xl p-6 shadow-md">
-                  <Users className="w-8 h-8 text-emerald-600 mx-auto mb-3" />
-                  <div className="text-2xl font-bold text-gray-900">Free</div>
-                  <div className="text-sm text-gray-600">Always</div>
-                </div>
-              </motion.div>
-              <motion.div whileHover={{ scale: 1.05 }} className="text-center">
-                <div className="bg-white rounded-xl p-6 shadow-md">
-                  <Download className="w-8 h-8 text-purple-600 mx-auto mb-3" />
-                  <div className="text-2xl font-bold text-gray-900">Instant</div>
-                  <div className="text-sm text-gray-600">Downloads</div>
-                </div>
-              </motion.div>
-            </div>
-          </StaggerChildren>
-        </div>
-      </div>
-    </div>
-  );
-}
