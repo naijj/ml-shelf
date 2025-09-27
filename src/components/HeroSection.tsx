@@ -2,13 +2,28 @@ import React from 'react';
 import { Brain, Download, Upload, Users, Sparkles, Zap } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import './GradientBlinds.css';
+import GradientBlinds from './GradientBlinds';
 
 export function HeroSection() {
   return (
-    <section className="hero relative overflow-hidden min-h-screen flex items-center justify-center text-white">
-      {/* Gradient Blinds Background */}
-      <div className="absolute inset-0 gradient-blinds"></div>
+    <section className="relative overflow-hidden min-h-screen flex items-center justify-center text-white">
+      {/* GradientBlinds Background */}
+      <div style={{ width: '100%', height: '100%', position: 'absolute', top: 0, left: 0 }}>
+        <GradientBlinds
+          gradientColors={['#FF9FFC', '#5227FF', '#764ba2', '#667eea']}
+          angle={45}
+          noise={0.3}
+          blindCount={15}
+          blindMinWidth={60}
+          spotlightRadius={0.6}
+          spotlightSoftness={1.2}
+          spotlightOpacity={0.8}
+          mouseDampening={0.15}
+          distortAmount={0}
+          shineDirection="left"
+          mixBlendMode="lighten"
+        />
+      </div>
       
       {/* Content */}
       <div className="relative z-10 px-4 text-center max-w-4xl mx-auto">
