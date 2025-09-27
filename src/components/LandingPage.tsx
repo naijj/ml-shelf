@@ -4,7 +4,7 @@ import { Brain, Download, Upload, Users, Zap, MousePointer, Cpu, ArrowRight, Dat
 import { motion } from 'framer-motion';
 import { HeroSection } from './HeroSection';
 import { TopModelsSection } from './TopModelsSection';
-import GradientBlinds from './GradientBlinds';
+import './GradientBlinds.css';
 
 export function LandingPage() {
   const scrollToExplore = () => {
@@ -21,22 +21,7 @@ export function LandingPage() {
 
       {/* Why MLShelf Section */}
       <section id="next-section" className="py-20 bg-white relative overflow-hidden">
-        <div style={{ width: '100%', height: '100%', position: 'absolute', top: 0, left: 0 }}>
-          <GradientBlinds
-            gradientColors={['rgba(99, 102, 241, 0.1)', 'rgba(168, 85, 247, 0.1)']}
-            angle={135}
-            noise={0.1}
-            blindCount={8}
-            blindMinWidth={100}
-            spotlightRadius={0.3}
-            spotlightSoftness={0.5}
-            spotlightOpacity={0.3}
-            mouseDampening={0.25}
-            distortAmount={0}
-            shineDirection="left"
-            mixBlendMode="overlay"
-          />
-        </div>
+        <div className="absolute inset-0 subtle-gradient-blinds"></div>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -107,22 +92,7 @@ export function LandingPage() {
 
       {/* How It Works Section */}
       <section id="how-it-works" className="py-20 bg-gradient-to-br from-gray-50 to-blue-50 relative overflow-hidden">
-        <div style={{ width: '100%', height: '100%', position: 'absolute', top: 0, left: 0 }}>
-          <GradientBlinds
-            gradientColors={['rgba(59, 130, 246, 0.15)', 'rgba(147, 51, 234, 0.15)']}
-            angle={45}
-            noise={0.15}
-            blindCount={6}
-            blindMinWidth={120}
-            spotlightRadius={0.5}
-            spotlightSoftness={1}
-            spotlightOpacity={0.4}
-            mouseDampening={0.3}
-            distortAmount={0}
-            shineDirection="right"
-            mixBlendMode="soft-light"
-          />
-        </div>
+        <div className="absolute inset-0 subtle-gradient-blinds"></div>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}

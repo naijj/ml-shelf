@@ -5,7 +5,7 @@ import { ModelDetailModal } from './ModelDetailModal';
 import { useModels } from '../hooks/useModels';
 import { useUsers } from '../hooks/useUsers';
 import { Database as DB } from '../lib/supabase';
-import GradientBlinds from './GradientBlinds';
+import './GradientBlinds.css';
 
 type Model = DB['public']['Tables']['models']['Row'];
 
@@ -28,23 +28,11 @@ export function ExplorePage() {
         animate={{ opacity: 1 }}
         transition={{ duration: 0.8 }}
         className="relative py-20 overflow-hidden"
+        style={{
+          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%)'
+        }}
       >
-        <div style={{ width: '100%', height: '100%', position: 'absolute', top: 0, left: 0 }}>
-          <GradientBlinds
-            gradientColors={['#667eea', '#764ba2', '#f093fb']}
-            angle={135}
-            noise={0.2}
-            blindCount={10}
-            blindMinWidth={80}
-            spotlightRadius={0.4}
-            spotlightSoftness={0.8}
-            spotlightOpacity={0.6}
-            mouseDampening={0.2}
-            distortAmount={0}
-            shineDirection="right"
-            mixBlendMode="multiply"
-          />
-        </div>
+        <div className="absolute inset-0 subtle-gradient-blinds"></div>
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <motion.h1
             initial={{ opacity: 0, y: 30 }}
