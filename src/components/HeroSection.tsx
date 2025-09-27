@@ -157,7 +157,7 @@ export function HeroSection() {
               <div className="text-white/70 text-sm">Downloads</div>
             </div>
           </motion.div>
-        </div>
+        </motion.div>
       </div>
     </section>
   );
