@@ -8,6 +8,7 @@ export function Navbar() {
   const { user, signOut } = useAuth();
   const location = useLocation();
   const { scrollY } = useScroll();
+  mlm
   
   // Transform scroll position to background opacity and blur
   const backgroundOpacity = useTransform(scrollY, [0, 100], [0, 0.95]);
