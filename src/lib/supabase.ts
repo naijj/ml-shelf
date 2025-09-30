@@ -18,26 +18,6 @@ export const supabase = createClient(supabaseUrl || '', supabaseAnonKey || '', {
 export type Database = {
   public: {
     Tables: {
-      likes: {
-        Row: {
-          id: string;
-          user_id: string;
-          model_id: string;
-          created_at: string;
-        };
-        Insert: {
-          id?: string;
-          user_id: string;
-          model_id: string;
-          created_at?: string;
-        };
-        Update: {
-          id?: string;
-          user_id?: string;
-          model_id?: string;
-          created_at?: string;
-        };
-      };
       models: {
         Row: {
           id: string;
@@ -45,9 +25,6 @@ export type Database = {
           name: string;
           description: string | null;
           usage_instructions: string | null;
-          mac_instructions: string | null;
-          windows_instructions: string | null;
-          linux_instructions: string | null;
           file_path: string;
           size_bytes: number;
           framework: string | null;
@@ -55,7 +32,6 @@ export type Database = {
           tags: string[] | null;
           downloads: number;
           likes_count: number;
-          uploaded_by: string | null;
           created_at: string;
         };
         Insert: {
@@ -64,9 +40,6 @@ export type Database = {
           name: string;
           description?: string | null;
           usage_instructions?: string | null;
-          mac_instructions?: string | null;
-          windows_instructions?: string | null;
-          linux_instructions?: string | null;
           file_path: string;
           size_bytes: number;
           framework?: string | null;
@@ -74,7 +47,6 @@ export type Database = {
           tags?: string[] | null;
           downloads?: number;
           likes_count?: number;
-          uploaded_by?: string | null;
           created_at?: string;
         };
         Update: {
@@ -83,9 +55,6 @@ export type Database = {
           name?: string;
           description?: string | null;
           usage_instructions?: string | null;
-          mac_instructions?: string | null;
-          windows_instructions?: string | null;
-          linux_instructions?: string | null;
           file_path?: string;
           size_bytes?: number;
           framework?: string | null;
@@ -93,7 +62,6 @@ export type Database = {
           tags?: string[] | null;
           downloads?: number;
           likes_count?: number;
-          uploaded_by?: string | null;
           created_at?: string;
         };
       };

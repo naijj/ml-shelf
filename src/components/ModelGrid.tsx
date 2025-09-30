@@ -3,7 +3,6 @@ import { Database } from 'lucide-react';
 import { ModelCard } from './ModelCard';
 import { SearchAndFilters } from './SearchAndFilters';
 import { useModels } from '../hooks/useModels';
-import { useUsers } from '../hooks/useUsers';
 
 interface ModelGridProps {
   onViewModelDetails?: (model: any) => void;
@@ -11,23 +10,9 @@ interface ModelGridProps {
 
 export function ModelGrid({ onViewModelDetails }: ModelGridProps) {
   const { models, loading, downloadModel } = useModels();
-  const { userProfiles, fetchMultipleUserProfiles } = useUsers();
   const [searchQuery, setSearchQuery] = React.useState('');
   const [selectedFramework, setSelectedFramework] = React.useState('');
   const [sortBy, setSortBy] = React.useState<'latest' | 'downloads'>('latest');
-
-  // Fetch user profiles for all model uploaders
-  React.useEffect(() => {
-    if (models.length > 0) {
-      const uploaderIds = models
-        .map(model => model.uploaded_by)
-        .filter((id): id is string => id !== null);
-      
-      if (uploaderIds.length > 0) {
-        fetchMultipleUserProfiles(uploaderIds);
-      }
-    }
-  }, [models, fetchMultipleUserProfiles]);
 
   // Filter and sort models
   const filteredModels = React.useMemo(() => {
@@ -109,7 +94,6 @@ export function ModelGrid({ onViewModelDetails }: ModelGridProps) {
               model={model}
               onDownload={downloadModel}
               onViewDetails={onViewModelDetails}
-              uploaderEmail={model.uploaded_by ? userProfiles[model.uploaded_by]?.email : undefined}
             />
           ))}
         </div>

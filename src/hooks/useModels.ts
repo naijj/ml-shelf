@@ -35,9 +35,6 @@ export function useModels() {
       name: string;
       description?: string;
       usage_instructions?: string;
-      mac_instructions?: string;
-      windows_instructions?: string;
-      linux_instructions?: string;
       framework?: string;
       format?: string;
       tags?: string[];
@@ -68,13 +65,9 @@ export function useModels() {
       // Prepare database record
       const dbRecord = {
         user_id: userId,
-        uploaded_by: userId,
         name: metadata.name,
         description: metadata.description || null,
         usage_instructions: metadata.usage_instructions || null,
-        mac_instructions: metadata.mac_instructions || null,
-        windows_instructions: metadata.windows_instructions || null,
-        linux_instructions: metadata.linux_instructions || null,
         file_path: uploadData.path,
         size_bytes: file.size,
         framework: metadata.framework || null,

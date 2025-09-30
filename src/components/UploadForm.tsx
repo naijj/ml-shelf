@@ -25,9 +25,6 @@ export function UploadForm({ onSuccess }: UploadFormProps) {
     name: '',
     description: '',
     usage_instructions: '',
-    mac_instructions: '',
-    windows_instructions: '',
-    linux_instructions: '',
     framework: '',
     format: '',
     tags: ''
@@ -47,9 +44,6 @@ export function UploadForm({ onSuccess }: UploadFormProps) {
       name: '',
       description: '',
       usage_instructions: '',
-      mac_instructions: '',
-      windows_instructions: '',
-      linux_instructions: '',
       framework: '',
       format: '',
       tags: ''
@@ -159,9 +153,6 @@ export function UploadForm({ onSuccess }: UploadFormProps) {
         name: formData.name.trim(),
         description: formData.description.trim() || undefined,
         usage_instructions: formData.usage_instructions.trim() || undefined,
-        mac_instructions: formData.mac_instructions.trim() || undefined,
-        windows_instructions: formData.windows_instructions.trim() || undefined,
-        linux_instructions: formData.linux_instructions.trim() || undefined,
         framework: formData.framework || undefined,
         format: formData.format.trim() || undefined,
         tags: tagsArray.length > 0 ? tagsArray : undefined,
@@ -444,7 +435,7 @@ export function UploadForm({ onSuccess }: UploadFormProps) {
           {/* Usage Instructions */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              General Usage Instructions <span className="text-red-500">*</span>
+              Usage Instructions <span className="text-red-500">*</span>
             </label>
             <textarea
               value={formData.usage_instructions}
@@ -465,75 +456,8 @@ predictions = model.predict(your_data)
               required
             />
             <p className="text-xs text-gray-500 mt-1">
-              Provide general instructions on how to use your model. Include sample code if possible.
+              Provide clear instructions on how to use your model. Include sample code if possible.
             </p>
-          </div>
-
-          {/* OS-Specific Instructions */}
-          <div className="space-y-4">
-            <h3 className="text-lg font-semibold text-gray-900 flex items-center">
-              <span className="mr-2">💻</span>
-              OS-Specific Instructions (Optional)
-            </h3>
-            <p className="text-sm text-gray-600 mb-4">
-              Provide platform-specific setup and usage instructions for different operating systems.
-            </p>
-
-            {/* macOS Instructions */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                🍎 macOS Instructions
-              </label>
-              <textarea
-                value={formData.mac_instructions}
-                onChange={(e) => handleInputChange('mac_instructions', e.target.value)}
-                rows={4}
-                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-purple-500 outline-none transition-all resize-none font-mono text-sm"
-                placeholder="# macOS Setup
-brew install python
-pip install tensorflow
-
-# Usage
-python your_script.py"
-              />
-            </div>
-
-            {/* Windows Instructions */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                🪟 Windows Instructions
-              </label>
-              <textarea
-                value={formData.windows_instructions}
-                onChange={(e) => handleInputChange('windows_instructions', e.target.value)}
-                rows={4}
-                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-purple-500 outline-none transition-all resize-none font-mono text-sm"
-                placeholder="# Windows Setup
-pip install tensorflow
-
-# Usage
-python your_script.py"
-              />
-            </div>
-
-            {/* Linux Instructions */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                🐧 Linux Instructions
-              </label>
-              <textarea
-                value={formData.linux_instructions}
-                onChange={(e) => handleInputChange('linux_instructions', e.target.value)}
-                rows={4}
-                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-purple-500 outline-none transition-all resize-none font-mono text-sm"
-                placeholder="# Linux Setup
-sudo apt-get install python3-pip
-pip3 install tensorflow
-
-# Usage
-python3 your_script.py"
-              />
-            </div>
           </div>
 
           {/* Description */}
