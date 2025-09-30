@@ -1,6 +1,5 @@
 import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
-import { Navbar } from './components/Navbar';
 import { LandingPage } from './components/LandingPage';
 import { Login } from './components/Login';
 import { Register } from './components/Register';
@@ -40,7 +39,6 @@ function App() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <Navbar />
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route path="/explore" element={<ExplorePage />} />
