@@ -1,170 +1,171 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
+import { Link, useLocation } from 'react-router-dom';
+import { Brain, LogOut, User, Sparkles } from 'lucide-react';
 import { motion, useScroll, useTransform } from 'framer-motion';
-import { Menu, X, Brain } from 'lucide-react';
+import { useAuth } from '../hooks/useAuth';
 
 export function Navbar() {
-  const [isOpen, setIsOpen] = useState(false);
+  const { user, signOut } = useAuth();
+  const location = useLocation();
   const { scrollY } = useScroll();
   
   // Transform scroll position to background opacity and blur
-  const backgroundOpacity = useTransform(scrollY, [0, 100], [0.1, 0.8]);
-  const backdropBlur = useTransform(scrollY, [0, 100], [8, 20]);
+  const backgroundOpacity = useTransform(scrollY, [0, 100], [0, 0.95]);
+  const backdropBlur = useTransform(scrollY, [0, 100], [0, 12]);
+
+  const handleSignOut = async () => {
+    await signOut();
+  };
+
+  const isActive = (path: string) => location.pathname === path;
 
   return (
-    <>
-      {/* Main Floating Navbar */}
-      <motion.header
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8, ease: "easeOut" }}
-        className="fixed top-6 left-1/2 transform -translate-x-1/2 z-50 w-full max-w-4xl px-4"
+    <motion.header
+      initial={{ opacity: 0, y: -20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.6 }}
+      style={{
+        backgroundColor: useTransform(backgroundOpacity, (value) => `rgba(255, 255, 255, ${value})`),
+        backdropFilter: useTransform(backdropBlur, (value) => `blur(${value}px)`),
+      }}
+      className="sticky top-0 z-50 border-b border-white/20 transition-shadow duration-300"
+    >
+      <motion.div
+        style={{
+          boxShadow: useTransform(scrollY, [0, 100], ['0 0 0 rgba(0,0,0,0)', '0 4px 20px rgba(0,0,0,0.1)']),
+        }}
+        className="w-full"
       >
-        <motion.nav
-          style={{
-            backgroundColor: useTransform(backgroundOpacity, (value) => `rgba(255, 255, 255, ${value})`),
-            backdropFilter: useTransform(backdropBlur, (value) => `blur(${value}px)`),
-          }}
-          className="px-12 py-4 rounded-full border border-white/20 shadow-2xl w-full"
-        >
-          <div className="flex items-center justify-between space-x-12">
-            {/* Logo */}
-            <motion.div
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-              className="flex items-center space-x-3"
-            >
-              <motion.div
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex justify-between items-center h-16">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="flex items-center space-x-3"
+          >
+            <Link to="/" className="flex items-center space-x-3 hover:opacity-80 transition-all duration-300 group">
+              <motion.div 
                 whileHover={{ rotate: 360, scale: 1.1 }}
                 transition={{ duration: 0.6 }}
                 className="relative"
               >
-                <div className="w-10 h-10 bg-gradient-to-br from-blue-600 via-purple-600 to-cyan-500 rounded-full flex items-center justify-center shadow-lg">
-                  <Brain className="w-5 h-5 text-white" />
+                <div className="w-10 h-10 bg-gradient-to-br from-purple-600 to-blue-600 rounded-xl flex items-center justify-center shadow-lg">
+                  <Brain className="w-6 h-6 text-white" />
                 </div>
                 <motion.div
                   animate={{ scale: [1, 1.2, 1] }}
                   transition={{ duration: 2, repeat: Infinity }}
-                  className="absolute inset-0 bg-gradient-to-br from-blue-400 via-purple-400 to-cyan-400 rounded-full opacity-30 blur-sm"
+                  className="absolute -top-1 -right-1 w-3 h-3 bg-yellow-400 rounded-full"
                 />
               </motion.div>
-              <span className="text-xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">
-                ML Shelf
-              </span>
+              <div>
+                <h1 className="text-xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
+                  MLShelf
+                </h1>
+                <p className="text-xs text-gray-500 -mt-1">Tiny ML Hub</p>
+              </div>
+            </Link>
+          </motion.div>
+
+          <nav className="flex items-center space-x-8">
+            <motion.div
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.6, delay: 0.3 }}
+              className="hidden md:flex items-center space-x-8"
+            >
+              <Link
+                to="/"
+                className={`relative text-gray-600 hover:text-purple-600 transition-colors font-medium ${
+                  isActive('/') ? 'text-purple-600' : ''
+                }`}
+              >
+                Home
+                {isActive('/') && (
+                  <motion.div
+                    layoutId="activeLink"
+                    className="absolute -bottom-1 left-0 right-0 h-0.5 bg-gradient-to-r from-purple-600 to-blue-600 rounded-full"
+                  />
+                )}
+              </Link>
+              
+              <Link
+                to="/explore"
+                className={`relative text-gray-600 hover:text-purple-600 transition-colors font-medium ${
+                  isActive('/explore') ? 'text-purple-600' : ''
+                }`}
+              >
+                Explore
+                {isActive('/explore') && (
+                  <motion.div
+                    layoutId="activeLink"
+                    className="absolute -bottom-1 left-0 right-0 h-0.5 bg-gradient-to-r from-purple-600 to-blue-600 rounded-full"
+                  />
+                )}
+              </Link>
             </motion.div>
 
-            {/* Desktop Navigation Links */}
-            <div className="hidden md:flex items-center space-x-6">
-              {['Home', 'Models', 'Docs'].map((item, index) => (
-                <motion.a
-                  key={item}
-                  href="#"
-                  initial={{ opacity: 0, y: -10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5, delay: 0.3 + index * 0.1 }}
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  className="px-6 py-2 text-gray-700 hover:text-gray-900 rounded-full hover:bg-white/30 transition-all duration-300 font-medium"
-                >
-                  {item}
-                </motion.a>
-              ))}
-            </div>
-
-            {/* Auth Buttons */}
-            <div className="hidden md:flex items-center space-x-4">
-              <motion.button
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.6, delay: 0.6 }}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className="px-6 py-2 text-gray-700 hover:text-gray-900 rounded-full hover:bg-white/30 transition-all duration-300 font-medium"
-              >
-                Login
-              </motion.button>
-              <motion.button
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.6, delay: 0.7 }}
-                whileHover={{ scale: 1.05, boxShadow: "0 0 30px rgba(59, 130, 246, 0.5)" }}
-                whileTap={{ scale: 0.95 }}
-                className="px-8 py-2 bg-gradient-to-r from-blue-600 via-purple-600 to-cyan-500 text-white rounded-full hover:shadow-lg transition-all duration-300 font-medium"
-              >
-                Sign Up
-              </motion.button>
-            </div>
-
-            {/* Mobile Menu Button */}
-            <motion.button
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.6, delay: 0.5 }}
-              onClick={() => setIsOpen(!isOpen)}
-              className="md:hidden p-2 text-gray-700 hover:text-gray-900 rounded-full hover:bg-white/30 transition-all duration-300"
+            <motion.div
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.6, delay: 0.4 }}
+              className="flex items-center space-x-4"
             >
-              {isOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-            </motion.button>
-          </div>
-        </motion.nav>
-      </motion.header>
-
-      {/* Mobile Menu Overlay */}
-      {isOpen && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          className="fixed inset-0 bg-black/20 backdrop-blur-sm z-40 md:hidden"
-          onClick={() => setIsOpen(false)}
-        >
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9, y: -20 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.9, y: -20 }}
-            transition={{ duration: 0.3 }}
-            className="absolute top-24 left-1/2 transform -translate-x-1/2 w-96 bg-white/90 backdrop-blur-xl rounded-3xl border border-white/20 shadow-2xl p-6"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="space-y-4">
-              {['Home', 'Models', 'Docs'].map((item, index) => (
-                <motion.a
-                  key={item}
-                  href="#"
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.3, delay: index * 0.1 }}
-                  className="block px-4 py-3 text-gray-700 hover:text-gray-900 rounded-2xl hover:bg-white/50 transition-all duration-300 font-medium text-center"
-                  onClick={() => setIsOpen(false)}
-                >
-                  {item}
-                </motion.a>
-              ))}
-              
-              <div className="border-t border-gray-200/50 pt-4 space-y-3">
-                <motion.button
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.3, delay: 0.4 }}
-                  className="w-full px-4 py-3 text-gray-700 hover:text-gray-900 rounded-2xl hover:bg-white/50 transition-all duration-300 font-medium"
-                  onClick={() => setIsOpen(false)}
-                >
-                  Login
-                </motion.button>
-                <motion.button
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.3, delay: 0.5 }}
-                  className="w-full px-4 py-3 bg-gradient-to-r from-blue-600 via-purple-600 to-cyan-500 text-white rounded-2xl hover:shadow-lg transition-all duration-300 font-medium"
-                  onClick={() => setIsOpen(false)}
-                >
-                  Sign Up
-                </motion.button>
-              </div>
-            </div>
-          </motion.div>
-        </motion.div>
-      )}
-    </>
+              {user ? (
+                <>
+                  <Link
+                    to="/dashboard"
+                    className={`relative flex items-center space-x-2 px-4 py-2 rounded-xl transition-all duration-300 font-medium ${
+                      isActive('/dashboard') 
+                        ? 'bg-gradient-to-r from-purple-600 to-blue-600 text-white shadow-lg' 
+                        : 'text-gray-600 hover:text-purple-600 hover:bg-purple-50'
+                    }`}
+                  >
+                    <User className="w-4 h-4" />
+                    <span>Dashboard</span>
+                    {isActive('/dashboard') && (
+                      <motion.div
+                        animate={{ scale: [1, 1.2, 1] }}
+                        transition={{ duration: 1, repeat: Infinity }}
+                        className="absolute -top-1 -right-1 w-2 h-2 bg-yellow-400 rounded-full"
+                      />
+                    )}
+                  </Link>
+                  <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={handleSignOut}
+                    className="flex items-center space-x-2 px-4 py-2 text-red-600 hover:bg-red-50 rounded-xl transition-all duration-300 font-medium"
+                  >
+                    <LogOut className="w-4 h-4" />
+                    <span>Logout</span>
+                  </motion.button>
+                </>
+              ) : (
+                <div className="flex items-center space-x-4">
+                  <Link
+                    to="/login"
+                    className="text-gray-600 hover:text-purple-600 transition-colors font-medium"
+                  >
+                    Login
+                  </Link>
+                  <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                    <Link
+                      to="/register"
+                      className="bg-gradient-to-r from-purple-600 to-blue-600 text-white px-6 py-2 rounded-xl hover:shadow-lg transition-all duration-300 font-medium flex items-center space-x-2"
+                    >
+                      <Sparkles className="w-4 h-4" />
+                      <span>Sign Up</span>
+                    </Link>
+                  </motion.div>
+                </div>
+              )}
+            </motion.div>
+          </nav>
+        </div>
+      </div>
+      </motion.div>
+    </motion.header>
   );
 }
