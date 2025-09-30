@@ -23,7 +23,7 @@ export function Navbar() {
                 <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary-500-gradient-start to-primary-500-gradient-end p-0.5">
                   <div className="w-full h-full rounded-full bg-midnight flex items-center justify-center">
                     <img 
-                      src="/logo.png" 
+                      src="https://i.ibb.co/j9CswD06/Gemini-Generated-Image-pl9yo2pl9yo2pl9y-1.png" 
                       alt="MLShelf Logo" 
                       className="w-6 h-6 object-contain"
                     />
