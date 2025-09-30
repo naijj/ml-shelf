@@ -1,5 +1,5 @@
 import React from 'react';
-import { X, Download, Calendar, User, Database, Tag, Code, FileText, Monitor } from 'lucide-react';
+import { X, Download, Calendar, User, Database, Tag, Code, FileText, Monitor, CircleUser as UserCircle } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { tomorrow } from 'react-syntax-highlighter/dist/esm/styles/prism';
@@ -13,9 +13,10 @@ interface ModelDetailModalProps {
   isOpen: boolean;
   onClose: () => void;
   onDownload: (model: Model) => void;
+  uploaderEmail?: string;
 }
 
-export function ModelDetailModal({ model, isOpen, onClose, onDownload }: ModelDetailModalProps) {
+export function ModelDetailModal({ model, isOpen, onClose, onDownload, uploaderEmail }: ModelDetailModalProps) {
   const [activeTab, setActiveTab] = React.useState<'mac' | 'windows' | 'linux'>('mac');
 
   if (!isOpen || !model) return null;
@@ -32,6 +33,13 @@ export function ModelDetailModal({ model, isOpen, onClose, onDownload }: ModelDe
       month: 'long',
       day: 'numeric'
     });
+  };
+
+  const getUploaderName = () => {
+    if (uploaderEmail) {
+      return uploaderEmail.split('@')[0];
+    }
+    return 'Anonymous';
   };
 
   const getFrameworkColor = (framework: string | null) => {
@@ -68,8 +76,8 @@ export function ModelDetailModal({ model, isOpen, onClose, onDownload }: ModelDe
     
     if (matches.length > 0) {
       return {
-        language: matches[1] || 'python',
-        code: matches.trim()[2]
+        language: matches[0][1] || 'python',
+        code: matches[0][2].trim()
       };
     }
     
@@ -92,8 +100,8 @@ export function ModelDetailModal({ model, isOpen, onClose, onDownload }: ModelDe
           <div className="flex-1">
             <h2 className="text-2xl font-bold text-gray-900 mb-2">{model.name}</h2>
             <div className="flex items-center space-x-2 mb-4">
-              <User className="w-4 h-4 text-gray-500" />
-              <span className="text-sm text-gray-600">Uploaded by User</span>
+              <UserCircle className="w-4 h-4 text-gray-500" />
+              <span className="text-sm text-gray-600">Uploaded by {getUploaderName()}</span>
             </div>
             <div className="flex items-center space-x-4">
               {model.framework && (
@@ -111,8 +119,8 @@ export function ModelDetailModal({ model, isOpen, onClose, onDownload }: ModelDe
               </span>
               <LikeButton 
                 modelId={model.id} 
-                likesCount={model.likes_count || 0}
                 showCount={true}
+                size="md"
               />
             </div>
           </div>
@@ -373,7 +381,7 @@ export function ModelDetailModal({ model, isOpen, onClose, onDownload }: ModelDe
                 <div className="bg-gray-50 rounded-lg p-4 space-y-3">
                   <div className="flex justify-between">
                     <span className="text-gray-600">Uploaded by:</span>
-                    <span className="font-medium text-gray-900">User</span>
+                    <span className="font-medium text-gray-900">{getUploaderName()}</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-gray-600">Upload date:</span>
