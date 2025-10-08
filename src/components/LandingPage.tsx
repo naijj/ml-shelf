@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Brain, Download, Upload, Users, Zap, MousePointer, Cpu, ArrowRight, Database } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { HeroSection } from './HeroSection';
+import HeroSection from './HeroSection';
 import { TopModelsSection } from './TopModelsSection';
 import './GradientBlinds.css';
 
